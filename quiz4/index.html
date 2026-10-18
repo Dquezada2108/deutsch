@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Deutsch Quiz 4 Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a single study column. Each topic is a tab; the live drill (an index card / Karteikarte) sits on top, the rule sheet below it. */
+:root{
+  --bg:#ECEFF4; --surface:#FFFFFF; --sunk:#F4F6FA; --rule:#D3DAE6; --line:#E6ECF7;
+  --ink:#18202E; --muted:#596476; --accent:#2340C8; --accent-soft:#E2E7FB; --on-accent:#FFFFFF;
+  --redline:#D9363E; --mark:#FFE45C;
+  --ok:#1C7A46; --ok-bg:#E0F2E7; --near:#94600A; --near-bg:#FBEFD6; --bad:#B42B2B; --bad-bg:#F8E1E1;
+  --shadow:rgba(24,32,60,.28);
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151C; --surface:#1A2029; --sunk:#151A22; --rule:#2C3544; --line:#1F2633;
+  --ink:#E6EAF1; --muted:#9BA6B7; --accent:#93A6FF; --accent-soft:#232B49; --on-accent:#0E1430;
+  --redline:#E2555C; --mark:rgba(255,222,80,.30);
+  --ok:#62CF92; --ok-bg:#15301F; --near:#E9B54E; --near-bg:#33280F; --bad:#F17E7E; --bad-bg:#3A1A1C;
+  --shadow:rgba(0,0,0,.55); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151C; --surface:#1A2029; --sunk:#151A22; --rule:#2C3544; --line:#1F2633;
+  --ink:#E6EAF1; --muted:#9BA6B7; --accent:#93A6FF; --accent-soft:#232B49; --on-accent:#0E1430;
+  --redline:#E2555C; --mark:rgba(255,222,80,.30);
+  --ok:#62CF92; --ok-bg:#15301F; --near:#E9B54E; --near-bg:#33280F; --bad:#F17E7E; --bad-bg:#3A1A1C;
+  --shadow:rgba(0,0,0,.55); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:24px 56px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+header{display:grid;gap:6px;padding-bottom:16px}
+header h1{font-size:clamp(30px,7vw,48px);font-weight:800;font-stretch:72%;line-height:.98;letter-spacing:-.005em}
+header h1 span{color:var(--accent)}
+.kicker{font-family:var(--display);font-stretch:95%;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+header p{margin:0;color:var(--muted);max-width:62ch}
+
+nav.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid var(--rule);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:15px;padding:12px 12px 9px;border:0;background:none;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;cursor:pointer}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .star{color:var(--redline);margin-left:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.panel{display:grid;gap:22px;padding-top:22px}
+.panel-head{display:grid;gap:4px}
+.panel-head h2{font-size:26px;font-weight:800;font-stretch:80%}
+.panel-head p{margin:0;color:var(--muted);max-width:64ch}
+
+/* drill */
+.drill{display:grid;gap:12px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.modes,.filters{display:flex;flex-wrap:wrap;gap:6px}
+.mode,.chip{padding:7px 13px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.mode[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip{font-size:13px;padding:5px 11px}
+.filters .lbl{font-size:13px;color:var(--muted);align-self:center}
+
+.card{position:relative;background-color:var(--surface);
+  background-image:linear-gradient(var(--redline),var(--redline)),repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);
+  background-size:100% 2px,100% 100%;background-position:0 50px,0 52px;background-repeat:no-repeat,repeat;
+  border-radius:6px;box-shadow:0 1px 0 var(--rule),0 14px 30px -20px var(--shadow);padding:14px 20px 20px;min-height:260px;animation:in .18s ease-out}
+@keyframes in{from{transform:translateY(4px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.card{animation:none}}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;height:36px}
+.card-top .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.prompt{padding-top:20px;font-size:19px;display:grid;gap:6px}
+.prompt .big{font-family:var(--display);font-size:clamp(26px,5.5vw,34px);font-weight:700;font-stretch:88%;line-height:1.15}
+.prompt .sub{font-size:14px;color:var(--muted)}
+.prompt .pair{margin:0;font-size:19px}
+.prompt .pair span{display:block}
+.prompt .cue{margin:0;font-size:15px;color:var(--muted)}
+.prompt .cue b{color:var(--accent);font-size:17px}
+.gap{display:inline-block;min-width:4.2em;border-bottom:2px solid var(--accent);color:transparent;line-height:1.1}
+.cuehint{color:var(--muted);font-size:16px}
+
+.answer{display:flex;gap:8px;margin-top:18px}
+.answer input{flex:1;min-width:0;font:inherit;font-size:18px;padding:10px 12px;border:1.5px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink)}
+.answer input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.answer input:disabled{opacity:.75}
+.keys{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.key{min-width:38px;padding:5px 8px;border:1px solid var(--rule);border-radius:4px;background:var(--sunk);font:inherit;font-size:16px;color:var(--ink);cursor:pointer}
+.key:hover{border-color:var(--accent)}
+
+.btn{font-family:var(--display);font-weight:700;font-stretch:90%;font-size:15px;padding:10px 16px;border-radius:6px;border:1.5px solid transparent;cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--rule)}
+.btn.quiet{background:transparent;color:var(--muted);border:0;padding-inline:4px;font-family:var(--body);font-weight:400;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.row-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:18px}
+.opt{text-align:left;padding:11px 14px;border:1.5px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-size:17px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+
+.feedback{margin-top:16px;padding:12px 14px;border-radius:6px;border-left:4px solid var(--rule);display:grid;gap:4px;background:var(--sunk)}
+.feedback .status{font-family:var(--display);font-weight:800;font-stretch:90%;font-size:17px}
+.feedback.ok{background:var(--ok-bg);border-color:var(--ok)} .feedback.ok .status{color:var(--ok)}
+.feedback.near{background:var(--near-bg);border-color:var(--near)} .feedback.near .status{color:var(--near)}
+.feedback.bad{background:var(--bad-bg);border-color:var(--bad)} .feedback.bad .status{color:var(--bad)}
+.feedback .sol{font-size:17px}
+.feedback .also{font-size:14px;color:var(--muted)}
+.feedback .why{font-size:15px}
+
+.built{margin-top:18px;min-height:52px;padding:8px;border:1.5px dashed var(--rule);border-radius:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--sunk)}
+.built:empty::before{content:"Tap the words in the right order";color:var(--muted);font-size:14px;padding-left:4px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:44px}
+.tile{padding:7px 12px;border-radius:5px;border:1.5px solid var(--rule);background:var(--surface);color:var(--ink);font:inherit;font-size:17px;cursor:pointer;box-shadow:0 1px 0 var(--rule)}
+.tile:hover:not(:disabled){border-color:var(--accent)}
+.built .tile{background:var(--accent-soft);border-color:transparent}
+.tile:disabled{cursor:default}
+.mainclause{font-size:19px}
+.flip-back{margin-top:16px;padding-top:12px;border-top:1px dashed var(--rule);font-size:20px}
+
+.stats{display:flex;gap:16px;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;align-items:center;flex-wrap:wrap}
+.stats b{color:var(--ink)}
+.stats .s-ok b{color:var(--ok)} .stats .s-near b{color:var(--near)} .stats .s-bad b{color:var(--bad)}
+.stats .btn.quiet{margin-left:auto}
+
+/* reference sheets */
+.ref{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.ref>summary{padding:14px 18px;cursor:pointer;font-family:var(--display);font-weight:800;font-stretch:85%;font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ref>summary::-webkit-details-marker{display:none}
+.ref>summary::after{content:"Ausblenden";font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)}
+.ref:not([open])>summary::after{content:"Einblenden"}
+.ref-body{padding:0 18px 20px;display:grid;gap:20px}
+.ref-body h3{font-size:14px;font-weight:700;font-stretch:95%;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.ref-body p{margin:0;max-width:66ch}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th{text-align:left;font-family:var(--display);font-stretch:92%;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--muted);border-bottom:1.5px solid var(--ink);padding:6px 12px 6px 0;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:8px 12px 8px 0;vertical-align:top}
+td.de{font-weight:700;white-space:nowrap}
+tr.grp td{font-family:var(--display);font-stretch:92%;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:16px;border-bottom:0}
+mark{background:var(--mark);color:var(--ink);padding:0 .15em;border-radius:2px}
+.ex b,.k{color:var(--accent);font-weight:700}
+.typ{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;border:1px solid var(--rule)}
+.typ.t0{background:var(--sunk)} .typ.t1{background:var(--accent-soft);border-color:transparent} .typ.t2{background:var(--mark);border-color:transparent}
+
+.patterns{display:grid;gap:10px}
+.pattern{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:4px 14px;align-items:center;padding:10px 12px;background:var(--sunk);border-radius:6px}
+.pattern .name{font-family:var(--display);font-stretch:90%;font-weight:700}
+.pattern .name small{display:block;font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted)}
+.slots{display:flex;flex-wrap:wrap;gap:4px}
+.slot{font-size:13px;padding:3px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--rule)}
+.slot.k{background:var(--accent-soft);border-color:transparent;font-weight:700}
+.slot.v{background:var(--mark);border-color:transparent;font-weight:700}
+.slot.dots{background:none;border:0;color:var(--muted)}
+@media (max-width:560px){.pattern{grid-template-columns:1fr}}
+
+.rulegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.rule{padding:12px 14px;background:var(--sunk);border-radius:6px;display:grid;gap:4px;min-width:0}
+.rule .h{font-family:var(--display);font-stretch:90%;font-weight:700}
+.rule .eg{font-size:15px}
+.steps{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:66ch}
+
+/* test */
+.test-intro{display:grid;gap:14px;padding-top:24px}
+.test-intro ul{margin:0;padding-left:1.2em;display:grid;gap:2px}
+.result-score{font-family:var(--display);font-weight:800;font-stretch:75%;font-size:56px;line-height:1;font-variant-numeric:tabular-nums}
+.result-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.result-list li{padding:10px 12px;border-radius:6px;background:var(--sunk);border-left:4px solid var(--bad);display:grid;gap:2px;font-size:15px}
+.result-list li.near{border-left-color:var(--near)}
+.result-list .you{color:var(--muted)}
+.progress{height:4px;background:var(--rule);border-radius:2px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .2s}
+footer{margin-top:40px;font-size:13px;color:var(--muted)}
+/* Tabelle mode: six labelled inputs */
+.multi{display:grid;gap:6px;margin-top:16px;max-width:460px}
+.mrow{display:grid;grid-template-columns:110px minmax(0,1fr);gap:4px 10px;align-items:center}
+.mlbl{font-size:15px;color:var(--muted);text-align:right}
+.mrow input{font:inherit;font-size:18px;padding:7px 10px;border:1.5px solid var(--rule);border-radius:6px;background:var(--surface);color:var(--ink);min-width:0}
+.mrow input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.mrow input.m-ok{border-color:var(--ok);background:var(--ok-bg)}
+.mrow input.m-near{border-color:var(--near);background:var(--near-bg)}
+.mrow input.m-bad{border-color:var(--bad);background:var(--bad-bg)}
+.msol{grid-column:2;font-size:14px;color:var(--muted)}
+.msol::before{content:"→ "}
+table.conj td{white-space:nowrap}
+footer a{color:var(--accent)}
+.panel,.ref-body,.drill{grid-template-columns:minmax(0,1fr)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Momente B1 · Seite 43 · Welcher Ort ist dein Highlight?</div>
+    <h1>Deutsch <span>Quiz 4</span> Trainer</h1>
+    <p>Endless practice for every quiz topic. Type answers the way Canvas expects: capital letters on nouns, commas, and umlauts. Missed cards come back a few questions later.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Themen">
+    <button class="tab" role="tab" id="t-damit" data-tab="damit">damit / um … zu</button>
+    <button class="tab" role="tab" id="t-konj" data-tab="konj">wenn + Konj. II<span class="star" aria-hidden="true">●</span></button>
+    <button class="tab" role="tab" id="t-adjektive" data-tab="adjektive">Adjektive</button>
+    <button class="tab" role="tab" id="t-vokabeln" data-tab="vokabeln">Vokabeln</button>
+    <button class="tab" role="tab" id="t-probetest" data-tab="probetest">Probetest</button>
+  </nav>
+
+  <!-- DAMIT -->
+  <section class="panel" id="p-damit" role="tabpanel" aria-labelledby="t-damit">
+    <div class="panel-head">
+      <h2>damit oder um … zu?</h2>
+      <p>The choice depends on one thing: <b>do both clauses have the same subject?</b> Start with <em>Welche Konstruktion?</em> to train that decision, then <em>Sätze verbinden</em>, where nobody tells you which one to use.</p>
+    </div>
+    <div class="drill" id="d-damit"></div>
+    <details class="ref" open>
+      <summary>Regeln: damit / um … zu</summary>
+      <div class="ref-body">
+        <div>
+          <h3>Die Entscheidung in 3 Schritten</h3>
+          <ol class="steps">
+            <li>Underline the <b>subject</b> of the main clause and the subject of the goal clause.</li>
+            <li><b>Same subject</b> (ich … ich, wir … wir, die Kinder … sie): <b class="k">um … zu</b>. Delete the subject and the modal verb, put <em>zu</em> + infinitive at the end.</li>
+            <li><b>Different subjects</b> (ich … du, Verena … andere Reisende): <b class="k">damit</b>. Keep the subject, delete wollen / sollen / möchten, conjugated verb at the end.</li>
+          </ol>
+        </div>
+        <div class="scroll"><table>
+          <thead><tr><th></th><th>um … zu</th><th>damit</th></tr></thead>
+          <tbody>
+            <tr><td class="de">Subjekte</td><td>gleich</td><td>verschieden</td></tr>
+            <tr><td class="de">Subjekt im Nebensatz?</td><td>nein</td><td>ja</td></tr>
+            <tr><td class="de">Am Ende</td><td>zu + Infinitiv</td><td>konjugiertes Verb</td></tr>
+            <tr><td class="de">Modalverben</td><td>fallen weg</td><td>wollen, sollen, möchten fallen weg; können bleibt</td></tr>
+            <tr><td class="de">Beispiel</td><td class="ex"><mark>Wir</mark> nehmen die Fähre, <b>um</b> auf die Insel <b>zu</b> fahren.</td><td class="ex"><mark>Ich</mark> schicke dir Fotos, <b>damit</b> <mark>du</mark> den Hafen <b>siehst</b>.</td></tr>
+          </tbody>
+        </table></div>
+        <div>
+          <h3>Fallen beim Subjekt-Check</h3>
+          <div class="rulegrid">
+            <div class="rule"><span class="h">Pronoun = same person</span><span class="eg">Die Kinder gehen früh schlafen. <mark>Sie</mark> sind morgen fit. → <b class="k">um</b> morgen fit <b class="k">zu</b> sein</span></div>
+            <div class="rule"><span class="h">"mein …" is not "ich"</span><span class="eg">Ich gehe ins Reisebüro. <mark>Mein Freund</mark> bekommt Infos. → <b class="k">damit</b> mein Freund Infos bekommt</span></div>
+            <div class="rule"><span class="h">man … man = same</span><span class="eg">Man nimmt die Fähre, <b class="k">um</b> nach Giglio <b class="k">zu</b> fahren.</span></div>
+            <div class="rule"><span class="h">Sentence clue in a gap</span><span class="eg">Ends in <b class="k">zu</b> + infinitive, no subject → <b>um</b>. Has its own subject + conjugated verb → <b>damit</b>.</span></div>
+          </div>
+        </div>
+        <div class="rulegrid">
+          <div class="rule"><span class="h">Trennbare Verben</span><span class="eg">um früh auf<b class="k">zu</b>stehen</span></div>
+          <div class="rule"><span class="h">Reflexive Verben</span><span class="eg">um <b class="k">uns</b> <b class="k">zu</b> entspannen</span></div>
+          <div class="rule"><span class="h">Mit nicht</span><span class="eg">um am Abend <b class="k">nicht zu</b> frieren · damit du es <b class="k">nicht</b> vergisst</span></div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- KONJUNKTIV II -->
+  <section class="panel" id="p-konj" role="tabpanel" aria-labelledby="t-konj" hidden>
+    <div class="panel-head">
+      <h2>wenn + Konjunktiv II</h2>
+      <p>Unreal conditions: things that are <em>not</em> true now. Drill the five key verbs in <em>Konjugation</em> and <em>Tabelle</em> first, then use them in sentences.</p>
+    </div>
+    <div class="drill" id="d-konj"></div>
+    <details class="ref" open>
+      <summary>Regeln: wenn + Konjunktiv II</summary>
+      <div class="ref-body">
+        <div>
+          <h3>Die 5 wichtigsten Verben</h3>
+          <div class="scroll"><table class="conj">
+            <thead><tr><th></th><th>werden</th><th>haben</th><th>sein</th><th>können</th><th>müssen</th></tr></thead>
+            <tbody id="konj-table"></tbody>
+          </table></div>
+          <p style="margin-top:8px">Endings: <b class="k">-e, -est, -e, -en, -et, -en</b>. ich and er/sie/es are always the same. <em>wärst / wärt</em> also exist as <em>wärest / wäret</em>.</p>
+        </div>
+        <div>
+          <h3>Welche Form?</h3>
+          <div class="rulegrid">
+            <div class="rule"><span class="h">sein, haben, Modalverben</span><span class="eg">own form: wäre, hätte, könnte, müsste</span></div>
+            <div class="rule"><span class="h">Alle anderen Verben</span><span class="eg"><b class="k">würde</b> + Infinitiv am Ende: ich würde ans Meer <b class="k">fahren</b></span></div>
+            <div class="rule"><span class="h">Präteritum + Umlaut</span><span class="eg">hatte → h<b class="k">ä</b>tte · konnte → k<b class="k">ö</b>nnte · musste → m<b class="k">ü</b>sste · wurde → w<b class="k">ü</b>rde · war → w<b class="k">ä</b>r<b class="k">e</b></span></div>
+          </div>
+        </div>
+        <div>
+          <h3>Satzbau</h3>
+          <div class="patterns">
+            <div class="pattern"><div class="name">wenn-Satz zuerst<small>Verb, Komma, Verb</small></div>
+              <div class="slots"><span class="slot k">Wenn</span><span class="slot">ich Zeit</span><span class="slot v">hätte</span><span class="slot">,</span><span class="slot v">würde</span><span class="slot">ich ans Meer</span><span class="slot k">fahren</span></div></div>
+            <div class="pattern"><div class="name">Hauptsatz zuerst<small>wenn-Satz am Ende</small></div>
+              <div class="slots"><span class="slot">Ich</span><span class="slot v">würde</span><span class="slot">ans Meer</span><span class="slot k">fahren</span><span class="slot">,</span><span class="slot k">wenn</span><span class="slot">ich Zeit</span><span class="slot v">hätte</span></div></div>
+          </div>
+        </div>
+        <div>
+          <h3>Realität → Wunsch: das Gegenteil sagen</h3>
+          <div class="scroll"><table>
+            <tbody>
+              <tr><td class="de">Ich habe <b class="k">kein</b> Geld.</td><td>Wenn ich Geld hätte, …</td></tr>
+              <tr><td class="de">Ich habe <b class="k">keine</b> Zeit.</td><td>Wenn ich Zeit hätte, …</td></tr>
+              <tr><td class="de">Ich kann <b class="k">nicht</b> reisen.</td><td>…, könnte ich reisen.</td></tr>
+              <tr><td class="de">Das Wetter ist <b class="k">schlecht</b>.</td><td>Wenn das Wetter gut / besser wäre, …</td></tr>
+              <tr><td class="de">Ich muss lernen.</td><td>Wenn ich <b class="k">nicht</b> lernen müsste, …</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+        <div>
+          <h3>Auch ohne wenn</h3>
+          <div class="rulegrid">
+            <div class="rule"><span class="h">Ratschlag</span><span class="eg">Wenn ich du wäre, würde ich im Oktober reisen. · An deiner Stelle würde ich …</span></div>
+            <div class="rule"><span class="h">Höflich</span><span class="eg">Könnten Sie mir helfen? · Ich hätte gern einen Kaffee.</span></div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ADJEKTIVE -->
+  <section class="panel" id="p-adjektive" role="tabpanel" aria-labelledby="t-adjektive" hidden>
+    <div class="panel-head">
+      <h2>Adjektivsteigerung</h2>
+      <p>Positiv, Komparativ, Superlativ. <em>Formen</em> asks for the comparative or superlative, <em>Positiv finden</em> goes backwards, and <em>Im Satz</em> adds als / wie and adjective endings.</p>
+    </div>
+    <div class="drill" id="d-adj"></div>
+    <details class="ref" open>
+      <summary>Regeln: Adjektivsteigerung</summary>
+      <div class="ref-body">
+        <div class="scroll"><table>
+          <thead><tr><th>Positiv</th><th>Komparativ</th><th>Superlativ</th></tr></thead>
+          <tbody><tr><td class="de">schön</td><td>schön<b class="k">er</b></td><td><b class="k">am</b> schön<b class="k">sten</b> / der schön<b class="k">st</b>e</td></tr></tbody>
+        </table></div>
+        <div class="rulegrid">
+          <div class="rule"><span class="h">Umlaut bei kurzen Wörtern mit a, o, u</span><span class="eg">groß → gr<b class="k">ö</b>ßer · kalt → k<b class="k">ä</b>lter</span></div>
+          <div class="rule"><span class="h">+ est nach -d, -t, -s, -ß, -z, -sch</span><span class="eg">alt → am ält<b class="k">est</b>en · heiß → am heiß<b class="k">est</b>en<br>Ausnahme: groß → am größten</span></div>
+          <div class="rule"><span class="h">-el / -er: das e fällt weg</span><span class="eg">dunkel → dunk<b class="k">l</b>er · teuer → teu<b class="k">r</b>er</span></div>
+          <div class="rule"><span class="h">Unregelmäßig</span><span class="eg">gut – besser – am besten · viel – mehr – am meisten · gern – lieber – am liebsten · hoch – höher – am höchsten · nah – näher – am nächsten</span></div>
+        </div>
+        <div class="rulegrid">
+          <div class="rule"><span class="h">Ungleich: Komparativ + als</span><span class="eg">Im Oktober ist es ruhiger <b class="k">als</b> im August.</span></div>
+          <div class="rule"><span class="h">Gleich: (genau)so + Positiv + wie</span><span class="eg">Giglio ist genauso schön <b class="k">wie</b> der Hafen.</span></div>
+          <div class="rule"><span class="h">Vor einem Nomen: + Endung</span><span class="eg">die herrlich<b class="k">sten</b> Strände · ein billiger<b class="k">es</b> Hotel</span></div>
+          <div class="rule"><span class="h">Aus dem Text</span><span class="eg"><em>Weniger</em> schön fand ich … · Ein Urlaub könnte nicht <em>schöner</em> sein!</span></div>
+        </div>
+        <div>
+          <h3>Alle Adjektive zum Üben</h3>
+          <div class="scroll"><table id="adj-table"><thead><tr><th>Positiv</th><th>Komparativ</th><th>Superlativ</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- VOKABELN -->
+  <section class="panel" id="p-vokabeln" role="tabpanel" aria-labelledby="t-vokabeln" hidden>
+    <div class="panel-head">
+      <h2>Vokabeln, Seite 43</h2>
+      <p><em>Prioridad</em>: the words you expect on the quiz. <em>Texto</em>: other words from "Welcher Ort ist dein Highlight?". <em>Redemittel</em>: the phrases Verena uses to give her opinion. Nouns need their article.</p>
+    </div>
+    <div class="drill" id="d-vok"></div>
+    <details class="ref" open>
+      <summary>Wortliste</summary>
+      <div class="ref-body">
+        <div class="scroll"><table id="vok-table"><thead><tr><th>Deutsch</th><th>Plural / Formen</th><th>Español</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- PROBETEST -->
+  <section class="panel" id="p-probetest" role="tabpanel" aria-labelledby="t-probetest" hidden>
+    <div class="panel-head">
+      <h2>Probetest</h2>
+      <p>20 mixed questions in quiz-topic order. No second tries. Score and mistakes at the end; every new test draws different questions.</p>
+    </div>
+    <div id="test"></div>
+  </section>
+
+  <footer><a href="../">← Alle Quiz-Trainer</a></footer>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+function canon(s){return String(s).normalize('NFC').replace(/[’‘`´]/g,"'").replace(/[„“”]/g,'"').replace(/…/g,'...').replace(/\s*([,;:!?])\s*/g,'$1 ').replace(/\s*\.\s*/g,'. ').replace(/\s+/g,' ').trim().replace(/[.!?]+$/,'').trim();}
+function loose(s){return canon(s).toLowerCase().replace(/[.,;:!?"]/g,' ').replace(/\s+/g,' ').trim();}
+function fold(s){return loose(s).replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
+function bare(s){return loose(s).replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss');}
+
+function check(input,answers){
+  const c=canon(input); if(!c) return null;
+  for(const a of answers) if(canon(a)===c) return {s:'ok'};
+  const L=loose(input),F=fold(input),B=bare(input);
+  for(const a of answers){
+    const s=a.match(/^am (.+)$/);
+    if(s&&(loose(s[1])===L||bare(s[1])===B)) return {s:'near',msg:'Almost. The superlative needs "am".'};
+    const m=a.match(/^(der|die|das) (.+)$/);
+    if(m&&!/\//.test(a)&&loose(m[2])===L) return {s:'near',msg:'Almost. The article is missing.'};
+  }
+  for(const a of answers) if(loose(a)===L) return {s:'near',msg:'Almost. Check capital letters and commas.'};
+  for(const a of answers) if(fold(a)===F||bare(a)===B) return {s:'near',msg:'Almost. The umlauts are missing (ä, ö, ü, ß). In Konjunktiv II the umlaut is the whole point.'};
+  return {s:'bad'};
+}
+
+/* ---------- data: damit / um zu ---------- */
+// [sentence 1, sentence 2, correct, why]
+const DAMIT_CHOOSE=[
+ ['Ich spare Geld.','Ich mache Urlaub in der Toskana.','um … zu','Same subject: ich / ich.'],
+ ['Ich schicke dir Fotos.','Du siehst den alten Hafen.','damit','Different subjects: ich / du.'],
+ ['Verena schreibt einen Bericht.','Andere Reisende bekommen Tipps.','damit','Different subjects: Verena / andere Reisende.'],
+ ['Wir nehmen die Fähre.','Wir fahren auf die Insel Giglio.','um … zu','Same subject: wir / wir.'],
+ ['Ich reise im Oktober.','Ich bin am Strand fast allein.','um … zu','Same subject: ich / ich.'],
+ ['Der Reiseleiter spricht langsam.','Die Touristen verstehen ihn.','damit','Different subjects: der Reiseleiter / die Touristen.'],
+ ['Ich lerne Italienisch.','Ich kann im Restaurant bestellen.','um … zu','Same subject: ich / ich. The modal verb kann drops out: um … bestellen zu können is fine too.'],
+ ['Sie nimmt eine Jacke mit.','Sie friert am Abend nicht.','um … zu','Same subject: sie / sie. → um am Abend nicht zu frieren.'],
+ ['Ich rufe das Hotel an.','Das Hotel reserviert ein Zimmer für mich.','damit','Different subjects: ich / das Hotel.'],
+ ['Man fährt nach Porto Santo Stefano.','Man sieht die Luxusjachten.','um … zu','Same subject: man / man.'],
+ ['Ich gebe dir meine Karte.','Du findest den Weg.','damit','Different subjects: ich / du.'],
+ ['Er steht früh auf.','Er sieht den Sonnenaufgang.','um … zu','Same subject: er / er.'],
+ ['Die Stadt baut einen neuen Hafen.','Mehr Schiffe können ankommen.','damit','Different subjects: die Stadt / mehr Schiffe.'],
+ ['Ich lerne jeden Tag Vokabeln.','Ich bestehe das Quiz.','um … zu','Same subject: ich / ich.'],
+ ['Ich erkläre dir die Regel.','Du machst keine Fehler mehr.','damit','Different subjects: ich / du.'],
+ ['Wir fahren ans Meer.','Wir entspannen uns.','um … zu','Same subject: wir. Reflexive pronoun stays: um uns zu entspannen.'],
+ ['Die Lehrerin gibt uns ein Arbeitsblatt.','Wir üben die Grammatik.','damit','Different subjects: die Lehrerin / wir. "uns" in the first sentence is an object, not the subject.'],
+ ['Ich schreibe eine Einkaufsliste.','Ich vergesse nichts.','um … zu','Same subject: ich / ich.'],
+ ['Mein Vater fährt langsam.','Wir sind sicher.','damit','Different subjects: mein Vater / wir.'],
+ ['Ich mache Fotos.','Ich erinnere mich später an den Urlaub.','um … zu','Same subject: ich. → um mich später an den Urlaub zu erinnern.'],
+ ['Ich gehe ins Reisebüro.','Mein Freund bekommt Informationen.','damit','Trap: "mein Freund" is not "ich". Different subjects → damit.'],
+ ['Die Kinder gehen früh schlafen.','Sie sind morgen fit.','um … zu','Trap: sie = die Kinder. Same subject → um morgen fit zu sein.'],
+ ['Ich schreibe es dir auf.','Du vergisst es nicht.','damit','Different subjects: ich / du.'],
+ ['Meine Eltern buchen ein Hotel am Strand.','Wir können jeden Tag schwimmen.','damit','Different subjects: meine Eltern / wir. With damit, können stays: damit wir schwimmen können.']
+];
+// [sentence with gap, answer, why]
+const DAMIT_GAP=[
+ ['Ich lerne viel, ___ meine Eltern stolz auf mich sind.','damit','The clause has its own subject (meine Eltern) and a conjugated verb at the end (sind).'],
+ ['Ich lerne viel, ___ eine gute Note zu bekommen.','um','No subject, zu + infinitive at the end (zu bekommen).'],
+ ['Wir fahren im Oktober, ___ am Strand fast allein zu sein.','um','No subject, zu + infinitive (zu sein).'],
+ ['Ich zeige dir die Fotos, ___ du den alten Hafen siehst.','damit','Own subject (du) + conjugated verb (siehst).'],
+ ['___ die Insel zu besuchen, nimmt man die Fähre.','Um','zu + infinitive and no subject → Um. The main clause then starts with the verb (nimmt).'],
+ ['___ alle Gäste Platz haben, reservieren wir einen großen Tisch.','Damit','Own subject (alle Gäste) + conjugated verb (haben).'],
+ ['Sie spart Geld, ___ sich eine Reise nach Italien leisten zu können.','um','zu + infinitive (leisten zu können). The modal stays as zu können here.'],
+ ['Der Kellner bringt die Karte, ___ wir bestellen können.','damit','Own subject (wir), können stays at the end.'],
+ ['Ich nehme Sonnencreme mit, ___ keinen Sonnenbrand zu bekommen.','um','No subject, zu + infinitive (zu bekommen).'],
+ ['Ich lasse das Fenster offen, ___ frische Luft hereinkommt.','damit','Own subject (frische Luft) + conjugated verb (hereinkommt).'],
+ ['Ich wiederhole die Wörter, ___ sie nicht zu vergessen.','um','No subject, nicht zu vergessen. ("sie" is the object here: die Wörter.)'],
+ ['Wir sprechen leise, ___ das Baby weiterschläft.','damit','Own subject (das Baby) + conjugated verb (weiterschläft).']
+];
+// [main clause, subordinate clause, why]
+const DAMIT_ORDER=[
+ ['Wir nehmen die Fähre,','um auf die Insel Giglio zu fahren','Same subject: um at the start, zu + infinitive at the end.'],
+ ['Verena schreibt einen Bericht,','damit andere Reisende Tipps bekommen','damit + subject … conjugated verb at the end.'],
+ ['Ich reise im Oktober,','um am Strand fast allein zu sein','zu sein goes last.'],
+ ['Ich schicke dir Fotos,','damit du den alten Hafen sehen kannst','With a modal: infinitive, then the conjugated modal last (sehen kannst).'],
+ ['Wir fahren ans Meer,','um uns zu entspannen','Reflexive pronoun right after um.'],
+ ['Ich stehe früh auf,','um den Sonnenaufgang zu sehen','zu + infinitive last.'],
+ ['Der Reiseleiter spricht langsam,','damit die Touristen ihn verstehen','The conjugated verb (verstehen) goes last.'],
+ ['Ich lerne jeden Tag Vokabeln,','um das Quiz zu bestehen','zu + infinitive last.'],
+ ['Ich schreibe es dir auf,','damit du es nicht vergisst','nicht comes before the verb at the end.'],
+ ['Ich nehme eine Jacke mit,','um am Abend nicht zu frieren','nicht goes before zu + infinitive.'],
+ ['Ich rufe morgen an,','um ein Zimmer zu reservieren','zu + infinitive last.'],
+ ['Die Lehrerin erklärt die Regel noch einmal,','damit wir keine Fehler machen','The conjugated verb (machen) goes last.'],
+ ['Ich gehe früh ins Bett,','um morgen früh aufzustehen','Separable verb: aufzustehen is one word.'],
+ ['Ich gebe dir meine Karte,','damit du den Weg findest','The conjugated verb (findest) goes last.']
+];
+// [s1, s2, answers, 'u' | 'd', why]
+const DAMIT_COMBINE=[
+ ['Ich spare Geld.','Ich will in der Toskana Urlaub machen.',['Ich spare Geld, um in der Toskana Urlaub zu machen.','Um in der Toskana Urlaub zu machen, spare ich Geld.'],'u','Same subject (ich). will drops out.'],
+ ['Ich schicke dir Fotos.','Du sollst den alten Hafen sehen.',['Ich schicke dir Fotos, damit du den alten Hafen siehst.','Ich schicke dir Fotos, damit du den alten Hafen sehen kannst.'],'d','Different subjects (ich / du). sollst drops out; sehen → siehst.'],
+ ['Wir nehmen die Fähre.','Wir wollen auf die Insel Giglio fahren.',['Wir nehmen die Fähre, um auf die Insel Giglio zu fahren.','Um auf die Insel Giglio zu fahren, nehmen wir die Fähre.'],'u','Same subject (wir). wollen drops out.'],
+ ['Verena schreibt einen Bericht.','Andere Reisende sollen Tipps bekommen.',['Verena schreibt einen Bericht, damit andere Reisende Tipps bekommen.'],'d','Different subjects (Verena / andere Reisende).'],
+ ['Ich reise im Oktober.','Ich möchte am Strand fast allein sein.',['Ich reise im Oktober, um am Strand fast allein zu sein.','Um am Strand fast allein zu sein, reise ich im Oktober.'],'u','Same subject (ich). möchte drops out.'],
+ ['Der Reiseleiter spricht langsam.','Die Touristen sollen ihn verstehen.',['Der Reiseleiter spricht langsam, damit die Touristen ihn verstehen.','Der Reiseleiter spricht langsam, damit die Touristen ihn verstehen können.'],'d','Different subjects (der Reiseleiter / die Touristen).'],
+ ['Wir fahren ans Meer.','Wir wollen uns entspannen.',['Wir fahren ans Meer, um uns zu entspannen.','Um uns zu entspannen, fahren wir ans Meer.'],'u','Same subject (wir). The reflexive pronoun uns stays.'],
+ ['Ich stehe früh auf.','Ich will den Sonnenaufgang sehen.',['Ich stehe früh auf, um den Sonnenaufgang zu sehen.','Um den Sonnenaufgang zu sehen, stehe ich früh auf.'],'u','Same subject (ich).'],
+ ['Ich gebe dir meine Karte.','Du sollst den Weg finden.',['Ich gebe dir meine Karte, damit du den Weg findest.','Ich gebe dir meine Karte, damit du den Weg finden kannst.'],'d','Different subjects (ich / du).'],
+ ['Ich nehme eine Jacke mit.','Ich will am Abend nicht frieren.',['Ich nehme eine Jacke mit, um am Abend nicht zu frieren.','Um am Abend nicht zu frieren, nehme ich eine Jacke mit.'],'u','Same subject (ich). nicht goes before zu.'],
+ ['Die Lehrerin erklärt die Regel noch einmal.','Wir sollen keine Fehler machen.',['Die Lehrerin erklärt die Regel noch einmal, damit wir keine Fehler machen.'],'d','Different subjects (die Lehrerin / wir).'],
+ ['Ich rufe das Hotel an.','Ich möchte ein Zimmer reservieren.',['Ich rufe das Hotel an, um ein Zimmer zu reservieren.','Um ein Zimmer zu reservieren, rufe ich das Hotel an.'],'u','Same subject (ich).'],
+ ['Meine Eltern buchen ein Hotel am Strand.','Wir können jeden Tag schwimmen.',['Meine Eltern buchen ein Hotel am Strand, damit wir jeden Tag schwimmen können.'],'d','Different subjects (meine Eltern / wir). können stays with damit.'],
+ ['Ich lerne jeden Tag Vokabeln.','Ich will das Quiz bestehen.',['Ich lerne jeden Tag Vokabeln, um das Quiz zu bestehen.','Um das Quiz zu bestehen, lerne ich jeden Tag Vokabeln.'],'u','Same subject (ich).'],
+ ['Ich schreibe es dir auf.','Du sollst es nicht vergessen.',['Ich schreibe es dir auf, damit du es nicht vergisst.'],'d','Different subjects (ich / du). vergessen → du vergisst.'],
+ ['Ich gehe ins Reisebüro.','Mein Freund soll Informationen bekommen.',['Ich gehe ins Reisebüro, damit mein Freund Informationen bekommt.'],'d','Different subjects: "mein Freund" is not "ich".'],
+ ['Die Kinder gehen früh schlafen.','Sie wollen morgen fit sein.',['Die Kinder gehen früh schlafen, um morgen fit zu sein.','Um morgen fit zu sein, gehen die Kinder früh schlafen.'],'u','Same subject: sie = die Kinder.']
+];
+
+/* ---------- data: Konjunktiv II ---------- */
+const PERS=['ich','du','er / sie / es','wir','ihr','sie / Sie'];
+const KONJ=[
+ {inf:'werden',f:[['würde'],['würdest'],['würde'],['würden'],['würdet'],['würden']]},
+ {inf:'haben',f:[['hätte'],['hättest'],['hätte'],['hätten'],['hättet'],['hätten']]},
+ {inf:'sein',f:[['wäre'],['wärst','wärest'],['wäre'],['wären'],['wärt','wäret'],['wären']]},
+ {inf:'können',f:[['könnte'],['könntest'],['könnte'],['könnten'],['könntet'],['könnten']]},
+ {inf:'müssen',f:[['müsste'],['müsstest'],['müsste'],['müssten'],['müsstet'],['müssten']]}
+];
+const PRAET={werden:['wurde','wurdest','wurde','wurden','wurdet','wurden'],haben:['hatte','hattest','hatte','hatten','hattet','hatten'],sein:['war','warst','war','waren','wart','waren'],können:['konnte','konntest','konnte','konnten','konntet','konnten'],müssen:['musste','musstest','musste','mussten','musstet','mussten']};
+// [sentence, infinitive cue, answers]
+const KONJ_GAP=[
+ ['Wenn ich reich ___, würde ich eine Luxusjacht kaufen.','sein',['wäre']],
+ ['Wenn ich mehr Zeit ___, würde ich nach Italien reisen.','haben',['hätte']],
+ ['Wenn wir ein Auto hätten, ___ wir an den Strand fahren.','können',['könnten']],
+ ['Wenn das Wetter schöner wäre, ___ wir an den Strand gehen.','können',['könnten']],
+ ['Wenn ihr in Porto Santo Stefano ___, würdet ihr den alten Hafen sehen.','sein',['wärt','wäret']],
+ ['Wenn du Hunger ___, könntest du ins Restaurant gehen.','haben',['hättest']],
+ ['Wenn ich nicht arbeiten ___, würde ich jeden Tag am Strand liegen.','müssen',['müsste']],
+ ['Wenn wir weniger Geld hätten, ___ wir sparen.','müssen',['müssten']],
+ ['Wenn sie mehr Urlaub hätte, ___ sie auf die Insel Giglio fahren.','werden',['würde']],
+ ['Wenn ich du ___, würde ich im Oktober reisen.','sein',['wäre']],
+ ['Wenn du mitkommen ___, wäre der Urlaub noch schöner.','können',['könntest']],
+ ['Wenn ihr Zeit ___, könntet ihr uns besuchen.','haben',['hättet']],
+ ['Wenn es im Sommer nicht so voll ___, würde ich im August fahren.','sein',['wäre']],
+ ['Wenn wir nicht so viel lernen ___, hätten wir mehr Freizeit.','müssen',['müssten']],
+ ['Was ___ du machen, wenn du eine Million Euro hättest?','werden',['würdest']],
+ ['Wenn ich ein Boot hätte, ___ ich jeden Tag segeln.','werden',['würde']],
+ ['Wenn die Fähre billiger ___, würden mehr Touristen nach Giglio fahren.','sein',['wäre']],
+ ['Wenn Sie Fragen ___, könnten Sie mich anrufen.','haben',['hätten']],
+ ['Wenn du krank wärst, ___ du zu Hause bleiben.','müssen',['müsstest']],
+ ['Wenn ihr früher aufstehen ___, würdet ihr den Sonnenaufgang sehen.','werden',['würdet']],
+ ['Wenn du hier ___, würdest du die Sandstrände sehen.','sein',['wärst','wärest']],
+ ['Wenn meine Freunde mehr Zeit hätten, ___ sie mitkommen.','können',['könnten']]
+];
+// [s1, s2, wenn-clauses, main (verb first), main (subject first), why]
+const KONJ_TRANS=[
+ ['Ich habe keine Zeit.','Ich fahre nicht ans Meer.',['ich Zeit hätte'],['würde ich ans Meer fahren'],['ich würde ans Meer fahren'],'Say the opposite of reality: keine and nicht disappear. fahren is a normal verb → würde + fahren.'],
+ ['Ich habe kein Geld.','Ich kann keine Luxusjacht kaufen.',['ich Geld hätte'],['könnte ich eine Luxusjacht kaufen'],['ich könnte eine Luxusjacht kaufen'],'kein Geld → Geld; keine → eine; kann → könnte.'],
+ ['Das Wetter ist schlecht.','Wir gehen nicht an den Strand.',['das Wetter gut wäre','das Wetter besser wäre','das Wetter schön wäre','das Wetter schöner wäre','das Wetter nicht schlecht wäre'],['würden wir an den Strand gehen'],['wir würden an den Strand gehen'],'ist → wäre; gehen → würden … gehen.'],
+ ['Du bist nicht hier.','Du siehst den alten Hafen nicht.',['du hier wärst','du hier wärest'],['würdest du den alten Hafen sehen','könntest du den alten Hafen sehen'],['du würdest den alten Hafen sehen','du könntest den alten Hafen sehen'],'du wärst · du würdest … sehen.'],
+ ['Wir müssen lernen.','Wir können nicht reisen.',['wir nicht lernen müssten'],['könnten wir reisen'],['wir könnten reisen'],'müssen → müssten, with nicht before the verbs at the end.'],
+ ['Es ist im Sommer so voll.','Ich fahre nicht im August.',['es im Sommer nicht so voll wäre'],['würde ich im August fahren'],['ich würde im August fahren'],'ist → wäre, plus nicht.'],
+ ['Ich bin müde.','Ich gehe nicht schwimmen.',['ich nicht müde wäre'],['würde ich schwimmen gehen'],['ich würde schwimmen gehen'],'bin → wäre; gehen → würde … gehen.'],
+ ['Er hat kein Auto.','Er kann nicht nach Grosseto fahren.',['er ein Auto hätte'],['könnte er nach Grosseto fahren'],['er könnte nach Grosseto fahren'],'kein Auto → ein Auto; kann → könnte.'],
+ ['Ihr habt keinen Urlaub.','Ihr fahrt nicht auf die Insel.',['ihr Urlaub hättet'],['würdet ihr auf die Insel fahren'],['ihr würdet auf die Insel fahren'],'ihr hättet · ihr würdet.'],
+ ['Die Fähre ist so teuer.','Wir nehmen sie nicht.',['die Fähre nicht so teuer wäre','die Fähre billiger wäre'],['würden wir sie nehmen'],['wir würden sie nehmen'],'ist → wäre; nehmen → würden … nehmen.'],
+ ['Meine Freunde sind nicht da.','Der Urlaub ist nicht so schön.',['meine Freunde da wären'],['wäre der Urlaub schöner','wäre der Urlaub noch schöner'],['der Urlaub wäre schöner','der Urlaub wäre noch schöner'],'sind → wären. "nicht so schön" becomes the comparative schöner.'],
+ ['Du hast keinen Hunger.','Du isst nichts.',['du Hunger hättest'],['würdest du etwas essen'],['du würdest etwas essen'],'nichts → etwas; essen → würdest … essen.']
+];
+const KONJ_ORDER=[
+ 'Wenn ich Zeit hätte , würde ich ans Meer fahren',
+ 'Wenn ich reich wäre , würde ich eine Luxusjacht kaufen',
+ 'Wenn wir ein Auto hätten , könnten wir nach Grosseto fahren',
+ 'Wenn du hier wärst , würdest du den alten Hafen sehen',
+ 'Wenn ich nicht arbeiten müsste , würde ich jeden Tag schwimmen',
+ 'Wenn das Wetter schöner wäre , könnten wir an den Strand gehen',
+ 'Wenn ihr Urlaub hättet , würdet ihr auf die Insel fahren',
+ 'Wenn sie mehr Geld hätte , würde sie in der Toskana wohnen',
+ 'Wenn ich du wäre , würde ich im Oktober reisen',
+ 'Ich würde mehr reisen , wenn ich mehr Geld hätte',
+ 'Wir könnten den Sonnenaufgang sehen , wenn wir früher aufstehen würden',
+ 'Du müsstest weniger lernen , wenn du jeden Tag üben würdest'
+];
+
+/* ---------- data: adjectives ---------- */
+const GROUPS={reg:'Regular: + er / am … sten',est:'+ est after -d, -t, -s, -ß, -z, -sch','uml-est':'Umlaut and + est',uml:'Umlaut',el:'-el / -er: the e drops in the comparative',irr:'Irregular'};
+const ADJ=[
+ ['schön','schöner','schönsten','reg'],['klein','kleiner','kleinsten','reg'],['angenehm','angenehmer','angenehmsten','reg'],['herrlich','herrlicher','herrlichsten','reg'],
+ ['ruhig','ruhiger','ruhigsten','reg'],['einfach','einfacher','einfachsten','reg'],['billig','billiger','billigsten','reg'],['langsam','langsamer','langsamsten','reg'],
+ ['voll','voller','vollsten','reg'],['wenig','weniger','wenigsten','reg'],['schnell','schneller','schnellsten','reg'],['wichtig','wichtiger','wichtigsten','reg'],
+ ['leicht','leichter','leichtesten','est'],['interessant','interessanter','interessantesten','est'],['heiß','heißer','heißesten','est'],['bekannt','bekannter','bekanntesten','est'],
+ ['weit','weiter','weitesten','est'],['süß','süßer','süßesten','est'],['spät','später','spätesten','est'],
+ ['alt','älter','ältesten','uml-est'],['kurz','kürzer','kürzesten','uml-est'],['kalt','kälter','kältesten','uml-est'],
+ ['jung','jünger','jüngsten','uml'],['groß','größer','größten','uml',{note:'Exception: no -e- in the superlative.'}],['lang','länger','längsten','uml'],
+ ['warm','wärmer','wärmsten','uml'],['stark','stärker','stärksten','uml'],['arm','ärmer','ärmsten','uml'],
+ ['dunkel','dunkler','dunkelsten','el'],['teuer','teurer','teuersten','el'],
+ ['gut','besser','besten','irr'],['viel','mehr','meisten','irr'],['gern','lieber','liebsten','irr'],['hoch','höher','höchsten','irr'],['nah','näher','nächsten','irr']
+];
+const ADJ_SENT=[
+ ['Im Oktober ist es am Strand ___ als im August.','ruhig, Komparativ',['ruhiger'],'Comparative + als.'],
+ ['Porto Santo Stefano ist ___ als Grosseto.','klein, Komparativ',['kleiner'],'klein → kleiner.'],
+ ['Das war der ___ Urlaub meines Lebens.','schön, Superlativ',['schönste'],'schönst + e (after der).'],
+ ['Die Luxusjachten sind viel ___ als die Fischerboote.','groß, Komparativ',['größer'],'Umlaut: groß → größer.'],
+ ['Im Oktober ist es ___ als im Juli.','kalt, Komparativ',['kälter'],'Umlaut: kalt → kälter.'],
+ ['Die Insel Giglio finde ich genauso schön ___ den alten Hafen.','Vergleichswort',['wie'],'genauso + Positiv + wie.'],
+ ['Der Strand hier ist sauberer ___ in meiner Stadt.','Vergleichswort',['als'],'Comparative + als.'],
+ ['Am ___ haben mir die Sandstrände gefallen.','gut, Superlativ',['besten'],'gut → besser → am besten.'],
+ ['Das Café am Hafen ist ___ als das Restaurant.','billig, Komparativ',['billiger'],'billig → billiger.'],
+ ['Die Fähre ist ___ als das Flugzeug.','langsam, Komparativ',['langsamer'],'langsam → langsamer.'],
+ ['Welche Jahreszeit findest du ___?','angenehm, Superlativ',['am angenehmsten'],'After a verb: am + sten.'],
+ ['Im Sommer ist die Stadt ___ als im Herbst.','voll, Komparativ',['voller'],'voll → voller.'],
+ ['Ich trinke ___ Tee als Kaffee.','gern, Komparativ',['lieber'],'gern → lieber → am liebsten.'],
+ ['Rom ist die ___ Stadt Italiens.','groß, Superlativ',['größte'],'größt + e. No -e- before -st.'],
+ ['Der Weg zum Strand ist ___ als der Weg zum Hafen.','kurz, Komparativ',['kürzer'],'Umlaut: kurz → kürzer.'],
+ ['Dieses Jahr möchte ich ein ___ Hotel als letztes Jahr.','billig, Komparativ',['billigeres'],'billiger + es (ein, neuter, accusative).'],
+ ['Die ___ Sandstrände findet man in der südlichen Toskana.','herrlich, Superlativ',['herrlichsten'],'herrlichst + en (die, plural).'],
+ ['Wir haben den ___ Strand gefunden.','schön, Superlativ',['schönsten'],'schönst + en (den, masculine, accusative).'],
+ ['Mein Bruder ist zwei Jahre ___ als ich.','alt, Komparativ',['älter'],'Umlaut: alt → älter.'],
+ ['Der Mount Everest ist der ___ Berg der Welt.','hoch, Superlativ',['höchste'],'hoch → höher → am höchsten. Before a noun: der höchste.'],
+ ['Im Urlaub schlafe ich viel ___ als zu Hause.','viel, Komparativ',['mehr'],'viel → mehr. mehr never takes an ending.'],
+ ['Von allen Jahreszeiten mag ich den Herbst am ___.','gern, Superlativ',['liebsten'],'gern → lieber → am liebsten.'],
+ ['Im Sommer ist das Wasser ___ als im Winter.','warm, Komparativ',['wärmer'],'Umlaut: warm → wärmer.'],
+ ['Ein Urlaub könnte nicht ___ sein!','schön, Komparativ',['schöner'],'From the text: Konjunktiv II + comparative.']
+];
+
+/* ---------- data: vocabulary ---------- */
+// src: p = Prioridad, t = Texto, r = Redemittel
+const VOK=[
+ {de:'die Luxusjacht',pl:'die Luxusjachten',es:'el yate de lujo',src:'p',alt:['die Luxusyacht']},
+ {de:'sofort',es:'enseguida, inmediatamente',src:'p'},
+ {de:'die Jahreszeit',pl:'die Jahreszeiten',es:'la estación (del año)',src:'p',note:'der Frühling, der Sommer, der Herbst, der Winter'},
+ {de:'der Sandstrand',pl:'die Sandstrände',es:'la playa de arena',src:'p'},
+ {de:'der Kiesstrand',pl:'die Kiesstrände',es:'la playa de grava (de piedritas)',src:'p',note:'Not in the text itself; the opposite of Sandstrand.'},
+ {de:'sich wohlfühlen',pl:'fühlt sich wohl · fühlte sich wohl · hat sich wohlgefühlt',es:'sentirse a gusto, sentirse bien',src:'p',alt:['sich wohl fühlen'],note:'Ich fühle mich hier wohl.'},
+ {de:'südlich (von + Dat.)',pl:'nördlich, östlich, westlich',es:'al sur (de)',src:'p',alt:['südlich','südlich von'],note:'40 Kilometer südlich von Grosseto'},
+ {de:'herrlich',es:'magnífico, espléndido',src:'p'},
+ {de:'insgesamt',es:'en general, en conjunto; en total',src:'p'},
+ {de:'angenehm',es:'agradable',src:'p'},
+ {de:'der Hafen',pl:'die Häfen',es:'el puerto',src:'t'},
+ {de:'die Halbinsel',pl:'die Halbinseln',es:'la península',src:'t'},
+ {de:'die Insel',pl:'die Inseln',es:'la isla',src:'t'},
+ {de:'die Fähre',pl:'die Fähren',es:'el ferry, el transbordador',src:'t'},
+ {de:'ungefähr',es:'aproximadamente',src:'t'},
+ {de:'liegen',pl:'liegt · lag · hat gelegen',es:'estar situado, encontrarse',src:'t',note:'Die Stadt liegt auf der Halbinsel.'},
+ {de:'wunderschön',es:'precioso, hermosísimo',src:'t'},
+ {de:'besonders',es:'especialmente, sobre todo',src:'t'},
+ {de:'in der Nähe von (+ Dat.)',es:'cerca de',src:'t',alt:['in der Nähe von','in der Nähe']},
+ {de:'allein',es:'solo (sin compañía)',src:'t'},
+ {de:'fast',es:'casi',src:'t'},
+ {de:'der Urlaub',pl:'die Urlaube',es:'las vacaciones',src:'t',note:'Urlaub machen = ir de vacaciones'},
+ {de:'einfallen',pl:'fällt ein · fiel ein · ist eingefallen',es:'venir a la mente, ocurrírsele',src:'t',note:'Mir fällt sofort der Hafen ein. (+ Dativ)'},
+ {de:'zu etwas passen',pl:'passt zu (+ Dat.)',es:'quedar con, encajar con',src:'t',alt:['passen zu','zu etwas (Dat) passen','passen'],note:'Die Jachten passen nicht zu dem einfachen Leben.'},
+ {de:'denken an (+ Akk.)',es:'pensar en',src:'t',alt:['denken an','an etwas denken']},
+ {de:'gefallen (+ Dat.)',pl:'gefällt · gefiel · hat gefallen',es:'gustar',src:'t',alt:['gefallen']},
+ {de:'einfach',es:'sencillo, simple',src:'t'},
+ {de:'der Ort',pl:'die Orte',es:'el lugar',src:'t'},
+ {de:'der Bericht',pl:'die Berichte',es:'el reporte, el relato',src:'t'},
+ {de:'Das fand ich sehr angenehm.',es:'Eso me pareció muy agradable.',src:'r'},
+ {de:'Weniger schön fand ich …',es:'Lo que me pareció menos bonito fue …',src:'r',alt:['Weniger schön fand ich']},
+ {de:'Besonders gefallen hat mir …',es:'Lo que más me gustó fue …',src:'r',alt:['Besonders gefallen hat mir','Besonders gefallen haben mir']},
+ {de:'Insgesamt fühlte ich mich dort sehr wohl.',es:'En general me sentí muy a gusto allí.',src:'r',alt:['Insgesamt habe ich mich dort sehr wohlgefühlt.']},
+ {de:'Ein Urlaub könnte nicht schöner sein!',es:'¡Unas vacaciones no podrían ser más bonitas!',src:'r'},
+ {de:'Wenn ich an … denke, fällt mir sofort … ein.',es:'Cuando pienso en …, enseguida me viene a la mente …',src:'r',alt:['Wenn ich an ... denke, fällt mir sofort ... ein']}
+];
+const VOK_GAP=[
+ ['Im Oktober sind die ___ fast leer.',['Sandstrände'],'p'],
+ ['Der Herbst ist meine liebste ___.',['Jahreszeit'],'p'],
+ ['Im Hafen liegen viele große ___.',['Luxusjachten'],'p'],
+ ['Ich habe die Nachricht gelesen und ___ geantwortet.',['sofort'],'p'],
+ ['Im Hotel war alles perfekt. Ich habe mich sehr ___.',['wohlgefühlt','wohl gefühlt'],'p'],
+ ['Porto Santo Stefano liegt 40 Kilometer ___ von Grosseto.',['südlich'],'p'],
+ ['Das Wetter war ___: Sonne, 25 Grad und kein Wind.',['herrlich','wunderschön'],'p'],
+ ['Es gab ein paar Probleme, aber ___ war der Urlaub super.',['insgesamt'],'p'],
+ ['Das Wasser war nicht zu kalt, sondern sehr ___.',['angenehm'],'p'],
+ ['An einem ___ gibt es kleine Steine statt Sand.',['Kiesstrand'],'p'],
+ ['Mit der ___ fährt man in einer Stunde auf die Insel.',['Fähre'],'t'],
+ ['Monte Argentario ist keine Insel, sondern eine ___.',['Halbinsel'],'t'],
+ ['Die Stadt liegt ___ 40 Kilometer südlich von Grosseto.',['ungefähr'],'t'],
+ ['Die Fischerboote liegen im alten ___.',['Hafen'],'t'],
+ ['Wenn ich an Italien denke, fällt mir sofort das Meer ___.',['ein'],'t'],
+ ['Die großen Jachten ___ nicht zu dem einfachen Leben in der Stadt.',['passen'],'t'],
+ ['Besonders ___ hat mir das Essen.',['gefallen'],'t'],
+ ['Im Oktober ist man am Strand fast ___.',['allein'],'t'],
+ ['Gibt es ein gutes Restaurant in der ___ von dem Hotel?',['Nähe'],'t'],
+ ['Nächsten Sommer machen wir ___ in der Toskana.',['Urlaub'],'t'],
+ ['Das Hotel war ruhig und sauber. Das fand ich sehr ___.',['angenehm'],'r'],
+ ['___ schön fand ich die vielen Touristen.',['Weniger'],'r'],
+ ['Insgesamt ___ ich mich dort sehr wohl.',['fühlte'],'r'],
+ ['Ein Urlaub ___ nicht schöner sein!',['könnte'],'r'],
+ ['___ gefallen hat mir der alte Hafen.',['Besonders'],'r']
+];
+
+/* ---------- item builders ---------- */
+const gapHTML=s=>s.replace('___','<span class="gap">____</span>');
+const pairHTML=(a,b)=>`<p class="pair"><span>${a}</span><span>${b}</span></p>`;
+
+function damitChooseItems(){return DAMIT_CHOOSE.map(([a,b,c,why])=>({type:'mc',label:'damit / um … zu · Welche Konstruktion?',prompt:pairHTML(a,b)+'<p class="cue">Sentence 2 is the goal. Same subject or different?</p>',options:['um … zu','damit'],correct:c,why}));}
+function damitGapItems(){return DAMIT_GAP.map(([s,c,why])=>({type:'mc',label:'damit / um … zu · Lücke',prompt:`<span>${gapHTML(s)}</span>`,options:c===cap(c)?['Um','Damit']:['um','damit'],correct:c,why}));}
+function damitOrderItems(){return DAMIT_ORDER.map(([m,sub,why])=>({type:'order',label:'damit / um … zu · Wörter ordnen',prompt:`<span class="sub">Put the words of the subordinate clause in order.</span><span class="mainclause">${m} …</span>`,words:sub.split(' '),answers:[sub],why}));}
+function damitCombineItems(){return DAMIT_COMBINE.map(([a,b,ans,k,why])=>({type:'text',label:'damit / um … zu · Sätze verbinden',prompt:pairHTML(a,b)+'<p class="cue">Verbinde mit <b>damit</b> oder <b>um … zu</b>. You decide.</p>',answers:ans,why,
+  post:(inp,r)=>{if(r.s==='ok')return r;const L=loose(inp);
+    if(k==='u'&&/\bdamit\b/.test(L))return{s:'near',msg:'Same subject in both sentences, so the quiz expects <b>um … zu</b>, not damit.'};
+    if(k==='d'&&/\bum\b/.test(L)&&/\bzu\b/.test(L))return{s:'bad',msg:'The subjects are different, so um … zu does not work here. You need <b>damit</b>.'};
+    return r}}));}
+
+const konjBy=inf=>KONJ.find(k=>k.inf===inf);
+function konjFormItems(){
+  const out=[];
+  KONJ.forEach(k=>k.f.forEach((forms,i)=>{
+    const pr=PERS[i].split(' / ');
+    const ans=[...forms];pr.filter(p=>p!=='Sie').forEach(p=>forms.forEach(f=>ans.push(p+' '+f)));
+    out.push({type:'text',label:'Konjunktiv II · Konjugation',prompt:`<span class="sub">Konjunktiv II von <b>${k.inf}</b></span><span class="big">${PERS[i]} ____</span>`,answers:ans,
+      why:`<b>${k.inf}</b>: ${PERS[i]} ${forms.join(' / ')} · Präteritum: ${PRAET[k.inf][i]} (no umlaut)`});
+  }));
+  return out;
+}
+function konjTableItems(){return KONJ.map(k=>({type:'multi',label:'Konjunktiv II · Tabelle',prompt:`<span class="sub">Type all six Konjunktiv II forms of</span><span class="big">${k.inf}</span>`,cells:k.f.map((forms,i)=>({label:PERS[i],answers:forms})),why:`${k.inf}: ${k.f.map(f=>f[0]).join(', ')}`}));}
+function konjGapItems(){return KONJ_GAP.map(([s,inf,ans])=>({type:'text',label:'Konjunktiv II · Lücke',prompt:`<span>${gapHTML(s)}</span><span class="cuehint">(${inf})</span>`,answers:ans,why:`Konjunktiv II of <b>${inf}</b>: ${konjBy(inf).f.map((f,i)=>PERS[i].split(' ')[0]+' '+f[0]).join(' · ')}`}));}
+function konjTransItems(){return KONJ_TRANS.map(([a,b,W,M1,M2,why])=>{
+  const ans=[];W.forEach(w=>M1.forEach(m=>ans.push(`Wenn ${w}, ${m}.`)));W.forEach(w=>M2.forEach(m=>ans.push(`${cap(m)}, wenn ${w}.`)));
+  return{type:'text',label:'Konjunktiv II · Realität → Wunsch',prompt:pairHTML(a,b)+'<p class="cue">This is reality. Make an unreal <b>wenn</b>-sentence (Konjunktiv II).</p>',answers:ans,why,
+    post:(inp,r)=>{if(r.s!=='bad')return r;const L=loose(inp);
+      if(/\b(kein|keine|keinen)\b/.test(L))return{s:'bad',msg:'Say the <b>opposite</b> of reality: kein / keine disappears.'};
+      if(/\b(habe|hat|habt|bin|ist|sind|kann|können|muss|müssen)\b/.test(L))return{s:'bad',msg:'There is still an indicative verb. Every verb must be Konjunktiv II (hätte, wäre, könnte, müsste, würde …).'};
+      return r}}});}
+function konjOrderItems(){return KONJ_ORDER.map(s=>({type:'order',label:'Konjunktiv II · Wörter ordnen',prompt:'<span class="sub">Build the whole sentence. The comma is a tile too.</span>',words:s.split(' '),answers:[s],why:'Verb at the end of the wenn-clause, comma, then the verb of the main clause.'}));}
+function konjPraetItems(){const out=[];KONJ.forEach(k=>[0,1,3,4].forEach(i=>{
+  out.push({type:'mc',label:'Konjunktiv II · Präteritum oder Konj. II?',prompt:`<span class="sub">${PERS[i]} …</span><span class="big">${k.f[i][0]}</span>`,options:['Präteritum','Konjunktiv II'],correct:'Konjunktiv II',why:`${k.f[i][0]} = Konjunktiv II. Präteritum: ${PRAET[k.inf][i]}.`});
+  out.push({type:'mc',label:'Konjunktiv II · Präteritum oder Konj. II?',prompt:`<span class="sub">${PERS[i]} …</span><span class="big">${PRAET[k.inf][i]}</span>`,options:['Präteritum','Konjunktiv II'],correct:'Präteritum',why:`${PRAET[k.inf][i]} = Präteritum. Konjunktiv II: ${k.f[i][0]}.`});
+}));return out;}
+
+function adjFormItems(){const out=[];ADJ.forEach(([p,k,s,g,x])=>{const sum=`<b>${p}</b> → ${k} → am ${s} · ${GROUPS[g]}${x&&x.note?'. '+x.note:''}`;
+  out.push({type:'text',label:'Adjektive · Komparativ',prompt:`<span class="sub">Komparativ von</span><span class="big">${p}</span>`,answers:[k],why:sum});
+  out.push({type:'text',label:'Adjektive · Superlativ',prompt:`<span class="sub">Superlativ (am …) von</span><span class="big">${p}</span>`,answers:['am '+s],why:sum});});return out;}
+function adjBackItems(){const out=[];ADJ.forEach(([p,k,s,g])=>{const sum=`${p} → ${k} → am ${s}`;
+  out.push({type:'text',label:'Adjektive · Positiv finden',prompt:`<span class="sub">Positiv von</span><span class="big">${k}</span>`,answers:[p],why:sum});
+  out.push({type:'text',label:'Adjektive · Positiv finden',prompt:`<span class="sub">Positiv von</span><span class="big">am ${s}</span>`,answers:[p],why:sum});});return out;}
+function adjSentItems(){return ADJ_SENT.map(([s,cue,ans,why])=>({type:'text',label:'Adjektive · Im Satz',prompt:`<span>${gapHTML(s)}</span><span class="cuehint">(${cue})</span>`,answers:ans,why}));}
+
+let vokFilter=store.get('q4.vokFilter','p');if(!['p','t','r','all'].includes(vokFilter))vokFilter='p';
+const vokList=()=>VOK.filter(v=>vokFilter==='all'||v.src===vokFilter);
+const isNoun=v=>/^(der|die|das) /.test(v.de);
+const vokWhy=v=>`<b>${v.de}</b> = ${v.es}${v.pl?' · '+v.pl:''}${v.note?' · '+v.note:''}`;
+function vokTypeItems(list){return (list||vokList()).map(v=>({type:'text',label:'Vokabeln · Español → Deutsch',prompt:`<span class="big">${v.es}</span>${isNoun(v)?'<span class="sub">with article</span>':''}`,answers:[v.de,...(v.alt||[])],why:vokWhy(v)}));}
+function vokFlipItems(){return vokList().map(v=>({type:'flip',label:'Vokabeln · Karteikarte',front:`<span class="big">${v.de}</span>`,back:`${v.es}${v.pl?`<div class="sub">${v.pl}</div>`:''}${v.note?`<div class="sub">${v.note}</div>`:''}`}));}
+function vokGapItems(only){return VOK_GAP.filter(g=>only?g[2]===only:(vokFilter==='all'||g[2]===vokFilter)).map(([s,ans])=>({type:'text',label:'Vokabeln · Lückentext',prompt:`<span>${gapHTML(s)}</span>`,answers:ans,why:''}));}
+
+/* ---------- card renderer ---------- */
+let uid=0;
+const KEYS=['ä','ö','ü','ß','Ä','Ö','Ü'];
+function renderItem(el,item,{counter='',onResult,onNext,allowSkip=true}){
+  const id='a'+(++uid);
+  let html=`<div class="card-top"><span class="kicker">${item.label}</span><span class="count">${counter}</span></div><div class="prompt">${item.type==='flip'?item.front:item.prompt}</div>`;
+  const keysHTML=`<div class="keys">${KEYS.map(k=>`<button type="button" class="key" data-k="${k}">${k}</button>`).join('')}</div>`;
+  if(item.type==='text'){
+    html+=`<form class="answer" autocomplete="off"><input id="${id}" type="text" aria-label="Antwort" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Antwort tippen"><button class="btn primary" type="submit">Prüfen</button></form>`+keysHTML;
+  } else if(item.type==='multi'){
+    html+=`<form class="multi" autocomplete="off">${item.cells.map((c,i)=>`<label class="mrow"><span class="mlbl">${c.label}</span><input type="text" data-i="${i}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><span class="msol" hidden></span></label>`).join('')}<div class="row-actions" style="justify-content:flex-start;margin-top:4px"><button class="btn primary" type="submit">Prüfen</button></div></form>`+keysHTML;
+  } else if(item.type==='order'){
+    let w=shuffle(item.words.map((x,i)=>i));
+    if(w.every((x,i)=>x===i)&&w.length>1) w=w.slice(1).concat(w[0]);
+    html+=`<div class="built"></div><div class="tiles">${w.map(i=>`<button type="button" class="tile" data-i="${i}">${item.words[i]}</button>`).join('')}</div>
+    <div class="row-actions" style="justify-content:flex-start"><button type="button" class="btn primary chk">Prüfen</button><button type="button" class="btn ghost clr">Zurücksetzen</button></div>`;
+  } else if(item.type==='mc'){
+    html+=`<div class="options">${item.options.map(o=>`<button type="button" class="opt" data-o="${o.replace(/"/g,'&quot;')}">${o}</button>`).join('')}</div>`;
+  } else {
+    html+=`<div class="flip-back" hidden>${item.back}</div>`;
+  }
+  html+=`<div class="feedback" hidden></div><div class="row-actions"><span class="left-act"></span><span class="right-act"></span></div>`;
+  el.innerHTML=html;
+  el.classList.remove('card');void el.offsetWidth;el.classList.add('card');
+  const fb=$('.feedback',el),left=$('.left-act',el),right=$('.right-act',el);
+  let done=false,lastInput=null;
+  const nextBtn=document.createElement('button');nextBtn.type='button';nextBtn.className='btn primary';nextBtn.textContent='Weiter →';nextBtn.hidden=true;nextBtn.onclick=()=>onNext();
+  right.appendChild(nextBtn);
+
+  function finish(status,given,msg){
+    done=true;
+    const titles={ok:'Richtig!',near:'Fast richtig',bad:'Leider falsch'};
+    let h=`<span class="status">${titles[status]}</span>`;
+    if(msg) h+=`<span>${msg}</span>`;
+    if(item.type==='text'){
+      if(status!=='ok') h+=`<span class="sol">Correct answer: <b>${item.answers[0]}</b></span>`;
+      if(item.answers.length>1) h+=`<span class="also">Also accepted: ${item.answers.slice(1,4).join(' · ')}</span>`;
+    }
+    if(item.type==='order'&&status!=='ok') h+=`<span class="sol">Correct: <b>${canon(item.answers[0])}</b></span>`;
+    if(item.why) h+=`<span class="why">${item.why}</span>`;
+    fb.className='feedback '+status;fb.innerHTML=h;fb.hidden=false;
+    left.innerHTML='';nextBtn.hidden=false;nextBtn.focus({preventScroll:true});
+    onResult(status,given);
+  }
+  el.querySelectorAll('.key').forEach(b=>b.addEventListener('click',()=>{if(done)return;const inp=lastInput||$('input',el);if(!inp)return;const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.dataset.k+inp.value.slice(e);inp.focus();inp.setSelectionRange(s+1,s+1)}));
+  el.querySelectorAll('input').forEach(i=>i.addEventListener('focus',()=>lastInput=i));
+
+  if(item.type==='text'){
+    const inp=$('input',el),form=$('form',el);
+    form.addEventListener('submit',e=>{e.preventDefault();if(done){onNext();return}let r=check(inp.value,item.answers);if(!r){inp.focus();return}if(item.post)r=item.post(inp.value,r);inp.disabled=true;$('button[type=submit]',form).disabled=true;finish(r.s,inp.value,r.msg)});
+    if(allowSkip){const sk=document.createElement('button');sk.type='button';sk.className='btn quiet';sk.textContent='Show answer';sk.onclick=()=>{if(done)return;inp.disabled=true;$('button[type=submit]',form).disabled=true;finish('bad','')};left.appendChild(sk)}
+    el._focus=()=>inp.focus({preventScroll:true});
+  } else if(item.type==='multi'){
+    const form=$('form',el),ins=[...el.querySelectorAll('.multi input')];
+    ins.forEach((inp,i)=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&i<ins.length-1&&!done){e.preventDefault();ins[i+1].focus()}}));
+    form.addEventListener('submit',e=>{e.preventDefault();if(done){onNext();return}
+      if(ins.some(i=>!i.value.trim())){const f=ins.find(i=>!i.value.trim());f.focus();return}
+      let worst='ok';const order={ok:0,near:1,bad:2};const msgs=new Set();
+      ins.forEach((inp,i)=>{const c=item.cells[i],r=check(inp.value,c.answers);inp.classList.add('m-'+r.s);inp.disabled=true;
+        if(r.s!=='ok'){const sol=inp.parentElement.querySelector('.msol');sol.textContent=c.answers.join(' / ');sol.hidden=false;if(r.msg)msgs.add(r.msg)}
+        if(order[r.s]>order[worst])worst=r.s});
+      $('button[type=submit]',form).disabled=true;
+      finish(worst,ins.map(i=>i.value).join(', '),[...msgs].join(' '))});
+    el._focus=()=>ins[0].focus({preventScroll:true});
+  } else if(item.type==='order'){
+    const built=$('.built',el),tiles=$('.tiles',el);
+    el.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>{if(done)return;(t.parentElement===tiles?built:tiles).appendChild(t)}));
+    $('.clr',el).onclick=()=>{if(done)return;[...built.children].forEach(t=>tiles.appendChild(t))};
+    $('.chk',el).onclick=()=>{if(done)return;if(tiles.children.length){tiles.animate&&tiles.animate([{transform:'translateX(-3px)'},{transform:'translateX(3px)'},{transform:'none'}],{duration:180});return}
+      const given=[...built.children].map(t=>t.textContent).join(' ');
+      el.querySelectorAll('.tile,.chk,.clr').forEach(b=>b.disabled=true);
+      finish(canon(given)===canon(item.answers[0])?'ok':'bad',canon(given))};
+    el._focus=()=>{const f=$('.tile',el);f&&f.focus({preventScroll:true})};
+  } else if(item.type==='mc'){
+    el.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{if(done)return;const ok=b.dataset.o===item.correct;
+      el.querySelectorAll('.opt').forEach(o=>{o.disabled=true;if(o.dataset.o===item.correct)o.classList.add('right')});if(!ok)b.classList.add('wrong');
+      finish(ok?'ok':'bad',b.dataset.o,ok?'':`The answer is <b>${item.correct}</b>.`)}));
+    el._focus=()=>{const f=$('.opt',el);f&&f.focus({preventScroll:true})};
+  } else {
+    const back=$('.flip-back',el);
+    const flip=document.createElement('button');flip.type='button';flip.className='btn ghost';flip.textContent='Umdrehen';
+    left.appendChild(flip);
+    flip.onclick=()=>{back.hidden=false;flip.remove();
+      const yes=document.createElement('button');yes.type='button';yes.className='btn primary';yes.textContent='Gewusst';
+      const no=document.createElement('button');no.type='button';no.className='btn ghost';no.textContent='Nochmal';
+      left.append(no);right.prepend(yes);
+      yes.onclick=()=>{onResult('ok');onNext()};no.onclick=()=>{onResult('bad');onNext()};yes.focus({preventScroll:true})};
+    el._focus=()=>flip.focus({preventScroll:true});
+  }
+}
+
+/* ---------- drill controller ---------- */
+function makeDrill(root,modes,extra){
+  let mi=0,queue=[],cur=null,stats={ok:0,near:0,bad:0},interacted=false;
+  root.innerHTML=`<div class="toolbar"><div class="modes" role="group" aria-label="Übungsart"></div>${extra||''}</div><div class="card"></div><div class="stats"></div>`;
+  const modesEl=$('.modes',root),card=$('.card',root),statsEl=$('.stats',root);
+  modes.forEach((m,i)=>{const b=document.createElement('button');b.type='button';b.className='mode';b.textContent=m.label;b.onclick=()=>{mi=i;interacted=true;reset()};modesEl.appendChild(b)});
+  function paintModes(){[...modesEl.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===mi)))}
+  function paintStats(){statsEl.innerHTML=`<span class="s-ok">Richtig <b>${stats.ok}</b></span><span class="s-near">Fast <b>${stats.near}</b></span><span class="s-bad">Falsch <b>${stats.bad}</b></span><button type="button" class="btn quiet">Neu starten</button>`;$('button',statsEl).onclick=()=>{interacted=true;reset()}}
+  function next(){
+    if(!queue.length) queue=shuffle(modes[mi].deck());
+    cur=queue.shift();
+    renderItem(card,cur,{counter:`${queue.length+1} left`,onResult:(s)=>{stats[s]++;paintStats();if(s!=='ok')queue.splice(Math.min(3,queue.length),0,cur)},onNext:()=>{interacted=true;next()}});
+    if(interacted&&card._focus) card._focus();
+  }
+  function reset(){queue=[];stats={ok:0,near:0,bad:0};paintModes();paintStats();next()}
+  reset();
+  return {reset:()=>{interacted=true;reset()},focus:()=>card._focus&&card._focus()};
+}
+
+/* ---------- build drills ---------- */
+const drills={};
+drills.damit=makeDrill($('#d-damit'),[{label:'Welche Konstruktion?',deck:damitChooseItems},{label:'Lücke: um oder damit?',deck:damitGapItems},{label:'Sätze verbinden',deck:damitCombineItems},{label:'Wörter ordnen',deck:damitOrderItems}]);
+drills.konj=makeDrill($('#d-konj'),[{label:'Konjugation',deck:konjFormItems},{label:'Tabelle',deck:konjTableItems},{label:'Präteritum oder Konj. II?',deck:konjPraetItems},{label:'Lücke',deck:konjGapItems},{label:'Realität → Wunsch',deck:konjTransItems},{label:'Wörter ordnen',deck:konjOrderItems}]);
+drills.adjektive=makeDrill($('#d-adj'),[{label:'Formen',deck:adjFormItems},{label:'Positiv finden',deck:adjBackItems},{label:'Im Satz',deck:adjSentItems}]);
+const cnt=s=>VOK.filter(v=>v.src===s).length;
+drills.vokabeln=makeDrill($('#d-vok'),[{label:'Español → Deutsch',deck:()=>vokTypeItems()},{label:'Karteikarten',deck:vokFlipItems},{label:'Lückentext',deck:()=>vokGapItems()}],
+  `<div class="filters" role="group" aria-label="Wortliste"><span class="lbl">Words:</span><button type="button" class="chip" data-f="p">Prioridad (${cnt('p')})</button><button type="button" class="chip" data-f="t">Texto (${cnt('t')})</button><button type="button" class="chip" data-f="r">Redemittel (${cnt('r')})</button><button type="button" class="chip" data-f="all">All</button></div>`);
+function paintFilter(){document.querySelectorAll('#d-vok .chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.f===vokFilter)))}
+document.querySelectorAll('#d-vok .chip').forEach(c=>c.onclick=()=>{vokFilter=c.dataset.f;store.set('q4.vokFilter',vokFilter);paintFilter();drills.vokabeln.reset()});
+paintFilter();
+
+/* ---------- reference tables ---------- */
+(function(){
+  $('#konj-table').innerHTML=PERS.map((p,i)=>`<tr><td class="de">${p}</td>${KONJ.map(k=>`<td>${k.f[i].join(' / ')}</td>`).join('')}</tr>`).join('');
+  const tb=$('#adj-table tbody');let h='';
+  ['reg','est','uml','uml-est','el','irr'].forEach(g=>{h+=`<tr class="grp"><td colspan="3">${GROUPS[g]}</td></tr>`;ADJ.filter(a=>a[3]===g).forEach(([p,k,s])=>{h+=`<tr><td class="de">${p}</td><td>${k}</td><td>am ${s}</td></tr>`})});
+  tb.innerHTML=h;
+  const row=v=>`<tr><td class="de">${v.de}</td><td>${v.pl||'–'}</td><td>${v.es}</td></tr>`;
+  $('#vok-table tbody').innerHTML=[['p','Prioridad: the words you expect on the quiz'],['t','Texto: more words from the text'],['r','Redemittel: giving your opinion']].map(([s,t])=>`<tr class="grp"><td colspan="3">${t}</td></tr>`+VOK.filter(v=>v.src===s).map(row).join('')).join('');
+})();
+
+/* ---------- Probetest ---------- */
+const TEST_PLAN=[
+ ['damit / um … zu: Konstruktion',damitChooseItems,2],['damit / um … zu: Lücke',damitGapItems,1],['damit / um … zu: Wörter ordnen',damitOrderItems,2],['damit / um … zu: Sätze verbinden',damitCombineItems,1],
+ ['Konj. II: Konjugation',konjFormItems,2],['Konj. II: Lücke',konjGapItems,2],['Konj. II: Realität → Wunsch',konjTransItems,1],['Konj. II: Wörter ordnen',konjOrderItems,1],
+ ['Adjektive: Formen',adjFormItems,1],['Adjektive: Positiv',adjBackItems,1],['Adjektive: im Satz',adjSentItems,2],
+ ['Vokabeln: Español → Deutsch',()=>vokTypeItems(VOK.filter(v=>v.src==='p')),2],['Vokabeln: Lückentext',()=>vokGapItems('p'),2]
+];
+const testRoot=$('#test');
+function testIntro(){
+  const n=TEST_PLAN.reduce((a,p)=>a+p[2],0);
+  testRoot.innerHTML=`<div class="card test-intro"><div class="card-top"><span class="kicker">Probetest</span><span class="count">${n} questions</span></div>
+  <ul>${TEST_PLAN.map(([t,,c])=>`<li>${c} × ${t}</li>`).join('')}</ul>
+  <div><button type="button" class="btn primary" id="test-start">Start test</button></div></div>`;
+  $('#test-start').onclick=startTest;
+}
+function startTest(){
+  const items=[];TEST_PLAN.forEach(([,f,n])=>shuffle(f()).slice(0,n).forEach(i=>items.push(i)));
+  const res=[];let i=0;
+  testRoot.innerHTML=`<div class="drill"><div class="progress" aria-hidden="true"><i style="width:0%"></i></div><div class="card"></div></div>`;
+  const card=$('.card',testRoot),bar=$('.progress i',testRoot);
+  function show(){
+    bar.style.width=(i/items.length*100)+'%';
+    renderItem(card,items[i],{counter:`${i+1} / ${items.length}`,allowSkip:false,onResult:(s,given)=>{res[i]={s,given,item:items[i]}},onNext:()=>{i++;i<items.length?show():summary()}});
+    card._focus&&card._focus();
+  }
+  function summary(){
+    const pts=res.reduce((a,r)=>a+(r.s==='ok'?1:r.s==='near'?.5:0),0);
+    const wrong=res.filter(r=>r.s!=='ok');
+    const strip=h=>h.replace(/<span class="gap">____<\/span>/g,'___').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+    const sol=it=>it.type==='mc'?it.correct:it.type==='multi'?it.cells.map(c=>c.answers[0]).join(', '):canon(it.answers[0]);
+    testRoot.innerHTML=`<div class="card test-intro"><div class="card-top"><span class="kicker">Ergebnis</span><span class="count">"Fast" counts as half a point</span></div>
+      <div class="result-score">${pts.toString().replace('.',',')} / ${items.length}</div>
+      ${wrong.length?`<div><h3 class="kicker" style="margin-bottom:8px">Review these</h3><ul class="result-list">${wrong.map(r=>`<li class="${r.s}"><span>${strip(r.item.prompt)}</span><span>Correct: <b>${sol(r.item)}</b></span>${r.given?`<span class="you">You wrote: ${String(r.given).replace(/</g,'&lt;')}</span>`:''}</li>`).join('')}</ul></div>`:'<p>No mistakes. Run another test to make sure.</p>'}
+      <div><button type="button" class="btn primary" id="test-again">New test</button></div></div>`;
+    $('#test-again').onclick=startTest;
+    store.set('q4.lastTest',{pts,n:items.length});
+  }
+  show();
+}
+testIntro();
+
+/* ---------- tabs ---------- */
+const TABS=['damit','konj','adjektive','vokabeln','probetest'];
+function openTab(t,user){
+  if(!TABS.includes(t)) t='damit';
+  TABS.forEach(x=>{$('#p-'+x).hidden=x!==t;$('#t-'+x).setAttribute('aria-selected',String(x===t))});
+  store.set('q4.tab',t);
+  if(user&&drills[t]) drills[t].focus();
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab,true)));
+const fromHash=(location.hash||'').replace('#','');
+openTab(TABS.includes(fromHash)?fromHash:store.get('q4.tab','damit'),false);
+</script>
+
+</body></html>
