@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Zwischenprüfung 2 Deutsch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one exam-sheet column under a sticky tab bar; answer-sheet bubbles for Lesen/Hören */
+:root{
+  --paper:#f4f6fb; --sheet:#ffffff; --ink:#1b2030; --muted:#596178; --rule:#dde2ee;
+  --accent:#2a44b0; --accent-ink:#ffffff; --accent-soft:#e7ebfb;
+  --ok:#1d7a4b; --ok-soft:#e2f3e9; --bad:#bf3326; --bad-soft:#fbe5e1; --warn:#9a5c00; --warn-soft:#fbefd9;
+  --display:"Zilla Slab", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10131b; --sheet:#181c27; --ink:#e6e9f1; --muted:#9ba2b6; --rule:#2a3142;
+  --accent:#93a6ff; --accent-ink:#10131b; --accent-soft:#222a48;
+  --ok:#62d39b; --ok-soft:#163325; --bad:#ff8c7c; --bad-soft:#3a1c19; --warn:#f0b65a; --warn-soft:#382a13; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10131b; --sheet:#181c27; --ink:#e6e9f1; --muted:#9ba2b6; --rule:#2a3142;
+  --accent:#93a6ff; --accent-ink:#10131b; --accent-soft:#222a48;
+  --ok:#62d39b; --ok-soft:#163325; --bad:#ff8c7c; --bad-soft:#3a1c19; --warn:#f0b65a; --warn-soft:#382a13; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sheet)}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sheet);border-bottom:1px solid var(--rule)}
+.top .wrap{padding-block:12px 0}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:700;font-size:1.5rem;margin:0;letter-spacing:.2px}
+.date{font-family:var(--mono);font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;color:var(--muted);font:600 .9rem var(--body);padding:10px 12px;border-bottom:3px solid transparent;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .sc{font-family:var(--mono);font-size:.72rem;font-weight:500;color:var(--muted)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main .wrap{padding-block:22px 64px;display:flex;flex-direction:column;gap:20px}
+section.panel{display:flex;flex-direction:column;gap:18px}
+h2{font-family:var(--display);font-weight:700;font-size:1.35rem;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:500;font-size:1.1rem;margin:0;text-wrap:balance}
+p{margin:0}
+.lead{color:var(--muted);max-width:62ch}
+.eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font:500 .85rem var(--body);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:600 .92rem var(--body);padding:9px 16px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q{font-size:1.12rem;line-height:1.6}
+.blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--accent);text-align:center;color:var(--accent);font-weight:600}
+.opt{border:1px solid var(--rule);background:var(--paper);color:var(--ink);font:600 1rem var(--body);padding:10px 16px;border-radius:8px;cursor:pointer;min-width:84px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.fb{border-radius:8px;padding:10px 14px;font-size:.95rem}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.no{background:var(--bad-soft);color:var(--bad)}
+.fb.warn{background:var(--warn-soft);color:var(--warn)}
+.fb b{font-weight:600}
+.fb .sol{display:block;color:var(--ink);margin-top:4px}
+input[type=text],textarea{width:100%;font:1rem var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:10px 12px}
+textarea{min-height:84px;resize:vertical}
+.pair{display:flex;flex-direction:column;gap:4px;font-size:1.05rem}
+.tag{display:inline-block;font:600 .78rem var(--mono);background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:4px;text-transform:none}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;min-height:46px;padding:8px;border-radius:8px}
+.tiles.answer{border:1px dashed var(--rule);background:var(--paper)}
+.tile{border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font:500 1rem var(--body);padding:6px 10px;border-radius:6px;cursor:pointer}
+.tiles.answer .tile{border-color:var(--accent);color:var(--accent)}
+.meter{font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+.tw{overflow-x:auto}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+td em{color:var(--accent);font-style:normal;font-weight:600}
+.ads{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ad{border:1px solid var(--rule);border-radius:8px;padding:12px;background:var(--paper);display:flex;flex-direction:column;gap:4px;min-width:0;font-size:.9rem}
+.ad .l{font:700 1rem var(--display);color:var(--accent)}
+.ad h4{margin:0;font:600 .95rem var(--body)}
+.sit{display:flex;flex-direction:column;gap:8px;padding-block:12px;border-bottom:1px solid var(--rule)}
+.sit:last-child{border-bottom:0}
+.bubbles{display:flex;gap:6px;flex-wrap:wrap}
+.bub{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;color:var(--ink);font:600 .9rem var(--mono);cursor:pointer;display:grid;place-items:center}
+.bub.wide{width:auto;padding:0 12px;border-radius:17px;font-family:var(--body);font-size:.85rem}
+.bub[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.bub.right{background:var(--ok);border-color:var(--ok);color:var(--sheet)}
+.bub.missed{border-color:var(--ok);border-width:2.5px}
+.bub.wrong{background:var(--bad);border-color:var(--bad);color:var(--sheet)}
+.why{font-size:.88rem;color:var(--muted)}
+.why.ok{color:var(--ok)} .why.no{color:var(--bad)}
+.player{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:10px 12px}
+.now{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.speak{display:flex;gap:6px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.speak span b{color:var(--ink);font-weight:600}
+.script{display:flex;flex-direction:column;gap:8px;font-size:.95rem}
+.script p.on{background:var(--accent-soft);border-radius:6px}
+.script p{padding:4px 6px}
+.script b{color:var(--accent);font-weight:600}
+label.sl{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+input[type=range]{accent-color:var(--accent)}
+.check{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+.check li{list-style:none}
+ul.clean{margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.clean li{list-style:none;padding-left:16px;position:relative}
+ul.clean li::before{content:"";position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid2>*{min-width:0}
+a{color:var(--accent)}
+.rec-opt{display:flex;flex-direction:column;gap:6px}
+.rec-opt label{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--rule);border-radius:8px;cursor:pointer;background:var(--paper)}
+.rec-opt label.right{border-color:var(--ok);background:var(--ok-soft)}
+.rec-opt label.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.rec-opt input{margin-top:4px;accent-color:var(--accent)}
+kbd{font-family:var(--mono);font-size:.78rem;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Zwischenprüfung 2</h1>
+      <a class="date" href="../">← Alle Quizze</a>
+      <span class="date">Mo 26.10. · Hören · Konnektoren · Lesen · Schreiben</span>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+
+<main><div class="wrap" id="main">
+
+<!-- REGELN -->
+<section class="panel" id="p-regeln" data-tab="regeln">
+  <div>
+    <p class="eyebrow">Spickzettel</p>
+    <h2>Die Regeln auf einer Seite</h2>
+  </div>
+  <div class="sheet">
+    <h3>wann · wenn · als</h3>
+    <div class="tw"><table>
+      <tr><th>Frage</th><th>Zeit</th><th>Wie oft?</th><th>Wort</th><th>Beispiel</th></tr>
+      <tr><td>ja</td><td>egal</td><td>egal</td><td><em>wann</em></td><td>Wann beginnt der Kurs? / Weißt du, wann er beginnt?</td></tr>
+      <tr><td>nein</td><td>Präsens / Zukunft</td><td>egal</td><td><em>wenn</em></td><td>Wenn ich Zeit habe, gehe ich joggen.</td></tr>
+      <tr><td>nein</td><td>Vergangenheit</td><td>mehrmals</td><td><em>wenn</em></td><td>(Immer) wenn wir gewannen, feierten wir.</td></tr>
+      <tr><td>nein</td><td>Vergangenheit</td><td>einmal</td><td><em>als</em></td><td>Als ich 12 war, habe ich Fußball gespielt.</td></tr>
+      <tr><td>nein</td><td>Bedingung (if)</td><td>—</td><td><em>wenn</em></td><td>Wenn es regnet, trainieren wir in der Halle.</td></tr>
+    </table></div>
+    <p class="why">Signalwörter für <b>als</b>: gestern, damals, als Kind, 2020, letztes Jahr. Für <b>wenn</b> (Vergangenheit): immer, jedes Mal, oft.</p>
+  </div>
+  <div class="sheet">
+    <h3>um … zu vs. damit</h3>
+    <div class="tw"><table>
+      <tr><th>Subjekte</th><th>Wort</th><th>Struktur</th><th>Beispiel</th></tr>
+      <tr><td>gleich</td><td><em>um … zu</em></td><td>um + … + zu + Infinitiv (am Ende)</td><td>Ich lerne viel, um die Prüfung zu bestehen.</td></tr>
+      <tr><td>verschieden</td><td><em>damit</em></td><td>damit + Subjekt + … + Verb (am Ende)</td><td>Der Lehrer spricht langsam, damit wir ihn verstehen.</td></tr>
+    </table></div>
+    <ul class="clean">
+      <li>Modalverb weg bei um … zu: <i>Ich lerne, ich <s>will</s> bestehen</i> → um zu bestehen.</li>
+      <li>Trennbare Verben: zu in die Mitte → um früh <b>aufzustehen</b>, um sich <b>anzumelden</b>.</li>
+      <li>Gleiches Subjekt geht auch mit damit, aber um … zu ist der Standard. Bei verschiedenen Subjekten nur damit.</li>
+    </ul>
+  </div>
+  <div class="sheet">
+    <h3>Satzstellung: Verb, Verb</h3>
+    <div class="tw"><table>
+      <tr><th>Reihenfolge</th><th>Beispiel</th></tr>
+      <tr><td>Nebensatz zuerst</td><td>Wenn ich Zeit <em>habe</em>, <em>gehe</em> ich ins Fitnessstudio.</td></tr>
+      <tr><td>Hauptsatz zuerst</td><td>Ich <em>gehe</em> ins Fitnessstudio, wenn ich Zeit <em>habe</em>.</td></tr>
+      <tr><td>Perfekt im Nebensatz</td><td>Als ich angekommen <em>bin</em>, <em>hat</em> das Spiel begonnen.</td></tr>
+      <tr><td>Modalverb im Nebensatz</td><td>…, damit du mitkommen <em>kannst</em>.</td></tr>
+    </table></div>
+  </div>
+  <div class="sheet">
+    <h3>wenn + Konjunktiv II (irreal)</h3>
+    <div class="tw"><table>
+      <tr><th>Infinitiv</th><th>ich / er</th><th>Beispiel</th></tr>
+      <tr><td>sein</td><td><em>wäre</em></td><td>Wenn ich Profi wäre, würde ich jeden Tag trainieren.</td></tr>
+      <tr><td>haben</td><td><em>hätte</em></td><td>Wenn ich mehr Zeit hätte, würde ich einen Kurs machen.</td></tr>
+      <tr><td>können</td><td><em>könnte</em></td><td>Wenn ich Deutsch könnte, könnte ich in Wien studieren.</td></tr>
+      <tr><td>müssen</td><td><em>müsste</em></td><td>Wenn ich arbeiten müsste, hätte ich keine Freizeit.</td></tr>
+      <tr><td>andere Verben</td><td><em>würde</em> + Inf.</td><td>Wenn ich im Lotto gewinnen würde, würde ich reisen.</td></tr>
+    </table></div>
+    <p class="why">Real (es ist möglich): Präsens. Irreal (es ist nicht so): Konjunktiv II in beiden Satzteilen.</p>
+  </div>
+  <div class="grid2">
+    <div class="sheet">
+      <h3>Lesen: Anzeigen zuordnen</h3>
+      <ul class="clean">
+        <li>Zuerst die Personen lesen und 2–3 Schlüsselwörter markieren (Alter, Ort, Zeit, Preis, Niveau).</li>
+        <li>Dann Anzeigen nur nach diesen Wörtern scannen.</li>
+        <li>Fallen: richtiges Thema, aber falsche Stadt, falsches Niveau oder falsche Uhrzeit.</li>
+        <li>Jede Anzeige nur einmal. Wenn nichts passt: <b>0</b>.</li>
+      </ul>
+    </div>
+    <div class="sheet">
+      <h3>Hören: drei Personen</h3>
+      <ul class="clean">
+        <li>Vor dem Hören alle Aussagen lesen. Wer ist für, wer gegen?</li>
+        <li>Die Aussagen kommen in der Reihenfolge des Gesprächs.</li>
+        <li>Die Aussagen benutzen andere Wörter als der Text (Synonyme).</li>
+        <li>Die Moderatorin berichtet oft, was <i>andere</i> sagen („Viele Hörer schreiben …“).</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sheet">
+    <h3>Offizielles Material mit echten Audios</h3>
+    <p class="why">Das Hören-Format mit drei Personen ist wie Goethe B1 Hören Teil 4 (Radiodiskussion). Das Lesen-Format ist wie Goethe B1 Lesen Teil 3 / A2 Lesen Teil 4 (Anzeigen zuordnen).</p>
+    <ul class="clean">
+      <li><a href="https://www.goethe.de/de/m/spr/prf/ueb/pb1.html" target="_blank" rel="noopener">Goethe-Institut: Prüfungstraining B1 (kostenlos, wie echte Prüfung)</a></li>
+      <li><a href="https://www.goethe.de/ins/cn/de/spr/prf/zb1/ueb.html" target="_blank" rel="noopener">Goethe-Institut: B1-Modellsätze mit Hören-Audio</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- KONNEKTOREN -->
+<section class="panel" id="p-konn" data-tab="konn" hidden>
+  <div>
+    <p class="eyebrow">Endlos-Übung</p>
+    <h2>Konnektoren: als, wenn, um … zu, damit</h2>
+  </div>
+  <div class="row chips" id="k-modes"></div>
+  <div class="sheet" id="k-card"></div>
+  <p class="why">Tipp: <kbd>Enter</kbd> prüft und geht weiter.</p>
+</section>
+
+<!-- SCHREIBEN -->
+<section class="panel" id="p-schreiben" data-tab="schreiben" hidden>
+  <div>
+    <p class="eyebrow">Schreiben</p>
+    <h2>Sätze mit wenn</h2>
+    <p class="lead">Umformen wird automatisch korrigiert. Bei „Frei schreiben“ vergleichst du mit dem Muster und bewertest dich selbst.</p>
+  </div>
+  <div class="row chips" id="s-modes"></div>
+  <div class="sheet" id="s-card"></div>
+</section>
+
+<!-- LESEN -->
+<section class="panel" id="p-lesen" data-tab="lesen" hidden>
+  <div>
+    <p class="eyebrow">Lesen · Suche nach einem Sprachkurs</p>
+    <h2>Welcher Kurs passt?</h2>
+  </div>
+  <div class="row chips" id="l-modes"></div>
+  <div id="l-body" class="panel"></div>
+</section>
+
+<!-- HÖREN -->
+<section class="panel" id="p-hoeren" data-tab="hoeren" hidden>
+  <div>
+    <p class="eyebrow">Hören · Arbeit, Sport</p>
+    <h2>Radiodiskussion: Wer sagt das?</h2>
+    <p class="lead">Lies zuerst die Aussagen. Hör die Diskussion zweimal, wie in der Prüfung. Die Stimmen kommen aus deinem Browser, deshalb klingen sie etwas künstlich.</p>
+  </div>
+  <div class="row chips" id="h-modes"></div>
+  <div id="h-body" class="panel"></div>
+</section>
+
+<!-- WORTSCHATZ -->
+<section class="panel" id="p-wort" data-tab="wort" hidden>
+  <div>
+    <p class="eyebrow">Wortschatz</p>
+    <h2>Arbeit, Sport, Sprachkurs</h2>
+    <p class="lead">Spanisch → Deutsch. Nomen mit Artikel schreiben.</p>
+  </div>
+  <div class="row chips" id="w-modes"></div>
+  <div class="sheet" id="w-card"></div>
+</section>
+
+</div></main>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const el=(t,a={},...kids)=>{const e=document.createElement(t);for(const k in a){if(k==='class')e.className=a[k];else if(k==='html')e.innerHTML=a[k];else if(k.startsWith('on'))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k]);}kids.flat().forEach(c=>{if(c!=null)e.append(c.nodeType?c:document.createTextNode(c))});return e;};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+function bag(arr){let q=[];return ()=>{if(!q.length)q=shuffle(arr);return q.pop();};}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* ---------- scoring ---------- */
+const scores=store.get('p2scores',{});
+function score(tab,ok){const s=scores[tab]||{c:0,t:0};s.t++;if(ok)s.c++;scores[tab]=s;store.set('p2scores',scores);paintScores();}
+function paintScores(){document.querySelectorAll('.tab').forEach(b=>{const s=scores[b.dataset.tab];b.querySelector('.sc').textContent=s?`${s.c}/${s.t}`:'';});}
+
+/* ---------- tabs ---------- */
+const TABS=[['regeln','Regeln'],['konn','Konnektoren'],['schreiben','Schreiben'],['lesen','Lesen'],['hoeren','Hören'],['wort','Wortschatz']];
+const tabsEl=$('#tabs');
+TABS.forEach(([id,label])=>tabsEl.append(el('button',{class:'tab',role:'tab','data-tab':id,id:'t-'+id,onclick:()=>show(id)},label,el('span',{class:'sc'}))));
+function show(id){document.querySelectorAll('section.panel[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==id);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===id));store.set('p2tab',id);if(id!=='hoeren')stopAudio();window.scrollTo(0,0);}
+const startTab=(location.hash||'').slice(1);
+paintScores();
+
+/* ---------- answer checking ---------- */
+function norm(s){return s.toLowerCase().replace(/[„“”"'’‚‘]/g,'').replace(/ß/g,'ss').replace(/\s*,\s*/g,', ').replace(/\s+/g,' ').replace(/[.!?\s]+$/,'').trim();}
+function noComma(s){return norm(s).replace(/,/g,'').replace(/\s+/g,' ');}
+function check(input,answers){const n=norm(input);if(!n)return 'empty';if(answers.some(a=>norm(a)===n))return 'ok';const nc=noComma(input);if(answers.some(a=>noComma(a)===nc))return 'comma';return 'no';}
+function modeChips(host,modes,cur,onPick){host.innerHTML='';modes.forEach(([id,label])=>host.append(el('button',{class:'chip','aria-pressed':id===cur,onclick:()=>{host.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));host.querySelector(`[data-id="${id}"]`).setAttribute('aria-pressed','true');onPick(id);},'data-id':id},label)));}
+
+/* =========================================================
+   KONNEKTOREN
+   ========================================================= */
+const FILL=[
+ ['___ ich 2024 in Hamburg war, habe ich zum ersten Mal ein Spiel im Stadion gesehen.','als','Vergangenheit + einmal (2024).'],
+ ['___ meine Schwester ihren ersten Job bekam, war sie sehr nervös.','als','Einmaliges Ereignis in der Vergangenheit.'],
+ ['___ wir gestern beim Training ankamen, hatte es schon angefangen.','als','„gestern“ = einmal, Vergangenheit.'],
+ ['___ ich ein Kind war, spielte ich jeden Tag Basketball.','als','Ein Lebensabschnitt (als Kind) zählt als einmal.'],
+ ['Er hat sich das Knie verletzt, ___ er letzten Samstag Ski gefahren ist.','als','„letzten Samstag“ = einmal.'],
+ ['___ der Chef die E-Mail las, rief er mich sofort an.','als','Ein konkretes Ereignis in der Vergangenheit.'],
+ ['___ ich morgen Zeit habe, gehe ich ins Fitnessstudio.','wenn','Zukunft → immer wenn.'],
+ ['Immer ___ es regnete, trainierten wir in der Halle.','wenn','Vergangenheit, aber wiederholt (immer).'],
+ ['___ du den Kurs bis Freitag buchst, bekommst du 10 % Rabatt.','wenn','Bedingung (if).'],
+ ['Jedes Mal, ___ er ein Tor schoss, jubelten die Fans.','wenn','„jedes Mal“ = wiederholt.'],
+ ['___ ich Feierabend habe, gehe ich joggen.','wenn','Präsens.'],
+ ['Ich würde mehr Sport machen, ___ ich mehr Zeit hätte.','wenn','Irreale Bedingung (Konjunktiv II).'],
+ ['___ das Wetter am Wochenende gut ist, fahren wir Rad.','wenn','Bedingung in der Zukunft.'],
+ ['___ mein Vater früher von der Arbeit kam, war er immer müde.','wenn','„früher … immer“ = wiederholt in der Vergangenheit.'],
+ ['Weißt du, ___ das Training morgen anfängt?','wann','Indirekte Frage → wann.'],
+ ['___ beginnt der Sprachkurs?','wann','Direkte Frage → wann.'],
+ ['Ich lerne jeden Tag Vokabeln, ___ die Prüfung zu bestehen.','um','Gleiches Subjekt (ich) + zu + Infinitiv.'],
+ ['Sie geht dreimal pro Woche schwimmen, ___ fit zu bleiben.','um','Gleiches Subjekt (sie).'],
+ ['Er macht einen Sprachkurs, ___ in Deutschland arbeiten zu können.','um','Gleiches Subjekt (er).'],
+ ['Wir stehen um sechs auf, ___ vor der Schule zu trainieren.','um','Gleiches Subjekt (wir).'],
+ ['Ich spare mein Geld, ___ mir neue Laufschuhe zu kaufen.','um','Gleiches Subjekt (ich).'],
+ ['Der Trainer erklärt die Übung langsam, ___ alle sie verstehen.','damit','Verschiedene Subjekte: der Trainer / alle.'],
+ ['Ich gebe dir meine Notizen, ___ du für den Test lernen kannst.','damit','Verschiedene Subjekte: ich / du.'],
+ ['Die Firma bietet flexible Arbeitszeiten an, ___ die Mitarbeiter zufrieden sind.','damit','Verschiedene Subjekte: die Firma / die Mitarbeiter.'],
+ ['Meine Mutter fährt mich zum Stadion, ___ ich nicht zu spät komme.','damit','Verschiedene Subjekte: Mutter / ich.'],
+ ['Die Sprachschule hat kleine Gruppen, ___ jeder Teilnehmer viel sprechen kann.','damit','Verschiedene Subjekte: Schule / jeder Teilnehmer.']
+];
+const FILLOPTS=[['als','als'],['wenn','wenn'],['wann','wann'],['um','um … zu'],['damit','damit']];
+const TILES=[
+ 'Als ich zwölf war, habe ich mit dem Schwimmen angefangen.',
+ 'Wenn es morgen regnet, trainieren wir in der Halle.',
+ 'Ich mache einen Deutschkurs, um in Wien zu studieren.',
+ 'Der Lehrer spricht langsam, damit wir ihn verstehen.',
+ 'Wenn ich mehr Geld hätte, würde ich einen Intensivkurs machen.',
+ 'Immer wenn wir gewonnen haben, sind wir Pizza essen gegangen.',
+ 'Sie arbeitet am Wochenende, um Geld für die Reise zu sparen.',
+ 'Ich schicke dir den Link, damit du dich für den Kurs anmelden kannst.',
+ 'Als er die Stelle bekommen hat, hat er seine Eltern angerufen.',
+ 'Wenn du Fragen hast, schreib mir eine E-Mail.',
+ 'Er joggt jeden Morgen, um fit zu bleiben.',
+ 'Wir müssen früh losfahren, damit wir den Zug nicht verpassen.'
+];
+const JOIN=[
+ ['Ich war 15.','Ich habe meinen ersten Job bekommen.','als',['Als ich 15 war, habe ich meinen ersten Job bekommen.','Ich habe meinen ersten Job bekommen, als ich 15 war.','Als ich fünfzehn war, habe ich meinen ersten Job bekommen.']],
+ ['Ich habe Feierabend.','Ich gehe ins Fitnessstudio.','wenn',['Wenn ich Feierabend habe, gehe ich ins Fitnessstudio.','Ich gehe ins Fitnessstudio, wenn ich Feierabend habe.']],
+ ['Ich trainiere jeden Tag.','Ich will den Marathon laufen.','um … zu',['Ich trainiere jeden Tag, um den Marathon zu laufen.','Um den Marathon zu laufen, trainiere ich jeden Tag.']],
+ ['Die Lehrerin wiederholt die Regel.','Die Schüler verstehen sie.','damit',['Die Lehrerin wiederholt die Regel, damit die Schüler sie verstehen.','Damit die Schüler sie verstehen, wiederholt die Lehrerin die Regel.']],
+ ['Wir hatten früher Sportunterricht.','Wir spielten immer Volleyball.','wenn',['Wenn wir früher Sportunterricht hatten, spielten wir immer Volleyball.','Wir spielten immer Volleyball, wenn wir früher Sportunterricht hatten.','Immer wenn wir früher Sportunterricht hatten, spielten wir Volleyball.','Wenn wir früher Sportunterricht hatten, spielten wir Volleyball.']],
+ ['Er sucht einen Sprachkurs.','Er möchte besser Deutsch sprechen.','um … zu',['Er sucht einen Sprachkurs, um besser Deutsch zu sprechen.','Um besser Deutsch zu sprechen, sucht er einen Sprachkurs.']],
+ ['Ich erkläre dir die Aufgabe.','Du kannst sie allein machen.','damit',['Ich erkläre dir die Aufgabe, damit du sie allein machen kannst.','Damit du sie allein machen kannst, erkläre ich dir die Aufgabe.']],
+ ['Das Spiel war zu Ende.','Die Fans gingen nach Hause.','als',['Als das Spiel zu Ende war, gingen die Fans nach Hause.','Die Fans gingen nach Hause, als das Spiel zu Ende war.']],
+ ['Ich bin müde.','Ich trinke einen Kaffee.','wenn',['Wenn ich müde bin, trinke ich einen Kaffee.','Ich trinke einen Kaffee, wenn ich müde bin.']],
+ ['Meine Eltern arbeiten viel.','Wir können im Sommer nach Deutschland reisen.','damit',['Meine Eltern arbeiten viel, damit wir im Sommer nach Deutschland reisen können.','Damit wir im Sommer nach Deutschland reisen können, arbeiten meine Eltern viel.']],
+ ['Sie lernt online.','Sie will flexibel lernen können.','um … zu',['Sie lernt online, um flexibel lernen zu können.','Um flexibel lernen zu können, lernt sie online.','Sie lernt online, um flexibel zu lernen.']],
+ ['Ich habe die Prüfung bestanden.','Ich war sehr glücklich.','als',['Als ich die Prüfung bestanden habe, war ich sehr glücklich.','Als ich die Prüfung bestand, war ich sehr glücklich.','Ich war sehr glücklich, als ich die Prüfung bestanden habe.','Ich war sehr glücklich, als ich die Prüfung bestand.']],
+ ['Ich stehe früh auf.','Ich komme pünktlich zur Arbeit.','um … zu',['Ich stehe früh auf, um pünktlich zur Arbeit zu kommen.','Um pünktlich zur Arbeit zu kommen, stehe ich früh auf.']]
+];
+const kBag={fill:bag(FILL),tiles:bag(TILES),join:bag(JOIN)};
+let kMode=store.get('p2kmode','mix');
+let kNext=null;
+modeChips($('#k-modes'),[['mix','Mix'],['fill','Einsetzen'],['tiles','Satzbau'],['join','Sätze verbinden']],kMode,m=>{kMode=m;store.set('p2kmode',m);renderK();});
+function renderK(){const m=kMode==='mix'?['fill','fill','tiles','join'][Math.floor(Math.random()*4)]:kMode;const card=$('#k-card');card.innerHTML='';kNext=null;
+  if(m==='fill')fillCard(card,kBag.fill(),'konn',renderK);
+  if(m==='tiles')tileCard(card,kBag.tiles(),'konn',renderK);
+  if(m==='join')joinCard(card,kBag.join(),renderK);
+}
+function nextBtn(card,fn){const b=el('button',{class:'btn',onclick:fn},'Weiter →');card.append(el('div',{class:'row'},b));kNext=fn;b.focus({preventScroll:true});}
+function fillCard(card,[s,ans,why],tab,again){
+  const parts=s.split('___');
+  const blank=el('span',{class:'blank'},' ');
+  card.append(el('p',{class:'eyebrow'},'Einsetzen'),el('p',{class:'q'},parts[0],blank,parts[1]));
+  const row=el('div',{class:'row'});let done=false;
+  FILLOPTS.forEach(([v,l])=>row.append(el('button',{class:'opt',onclick:e=>{if(done)return;done=true;const ok=v===ans;e.currentTarget.classList.add(ok?'right':'wrong');if(!ok)row.querySelector(`[data-v="${ans}"]`).classList.add('right');blank.textContent=ans==='um'?'um':ans;score(tab,ok);card.append(el('div',{class:'fb '+(ok?'ok':'no')},el('b',{},ok?'Richtig. ':'Falsch. '),why));nextBtn(card,again);},'data-v':v},l)));
+  card.append(row);
+}
+function tileCard(card,sent,tab,again,label='Satzbau'){
+  const toks=sent.split(' ');let order=shuffle(toks.map((t,i)=>i));
+  if(order.every((v,i)=>v===i))order=order.reverse();
+  const ans=el('div',{class:'tiles answer'});const pool=el('div',{class:'tiles'});let picked=[];let done=false;
+  function paint(){ans.innerHTML='';pool.innerHTML='';picked.forEach((idx,k)=>ans.append(el('button',{class:'tile',onclick:()=>{if(done)return;picked.splice(k,1);paint();}},toks[idx])));order.filter(i=>!picked.includes(i)).forEach(idx=>pool.append(el('button',{class:'tile',onclick:()=>{if(done)return;picked.push(idx);paint();}},toks[idx])));chk.disabled=picked.length!==toks.length;}
+  const chk=el('button',{class:'btn',onclick:verify},'Prüfen');
+  function verify(){if(done||picked.length!==toks.length)return;done=true;const got=picked.map(i=>toks[i]).join(' ');const ok=got===sent;score(tab,ok);card.append(el('div',{class:'fb '+(ok?'ok':'no')},el('b',{},ok?'Richtig.':'Nicht ganz.'),ok?'':el('span',{class:'sol'},sent)));nextBtn(card,again);}
+  kNext=verify;
+  card.append(el('p',{class:'eyebrow'},label+' · Klick die Wörter in die richtige Reihenfolge'),ans,pool,el('div',{class:'row'},chk,el('button',{class:'btn ghost',onclick:()=>{if(!done){picked=[];paint();}}},'Zurücksetzen')));
+  paint();
+}
+function joinCard(card,[a,b,con,answers],again){
+  const inp=el('input',{type:'text',id:'k-join-in',autocomplete:'off',spellcheck:'false',placeholder:'Schreib den ganzen Satz …'});
+  let done=false;
+  function verify(){if(done)return;const r=check(inp.value,answers);if(r==='empty')return;done=true;const ok=r==='ok';score('konn',ok);
+    const msg=r==='ok'?['ok','Richtig.','']:r==='comma'?['warn','Fast. Das Komma fehlt oder steht falsch.','']:['no','Nicht ganz. Mögliche Lösung:',''];
+    card.append(el('div',{class:'fb '+msg[0]},el('b',{},msg[1]),el('span',{class:'sol'},answers[0]),answers[1]?el('span',{class:'sol why'},'Auch richtig: '+answers[1]):null));nextBtn(card,again);}
+  kNext=verify;
+  card.append(el('p',{class:'eyebrow'},'Sätze verbinden'),el('div',{class:'pair'},el('span',{},a),el('span',{},b)),el('p',{},'Verbinde mit ',el('span',{class:'tag'},con)),inp,el('div',{class:'row'},el('button',{class:'btn',onclick:verify},'Prüfen'),el('button',{class:'btn ghost',onclick:()=>{if(!done){inp.value='';done=true;score('konn',false);card.append(el('div',{class:'fb no'},el('b',{},'Lösung:'),el('span',{class:'sol'},answers[0])));nextBtn(card,again);}}},'Lösung zeigen')));
+  setTimeout(()=>inp.focus({preventScroll:true}),0);
+}
+document.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;if(e.target.tagName==='TEXTAREA')return;const sec=document.querySelector('section.panel[data-tab]:not([hidden])');if(!sec)return;const fn=sec.dataset.tab==='konn'?kNext:sec.dataset.tab==='schreiben'?sNext:sec.dataset.tab==='wort'?wNext:null;if(fn){e.preventDefault();fn();}});
+
+/* =========================================================
+   SCHREIBEN
+   ========================================================= */
+const TRANS=[
+ ['Es regnet.','Wir trainieren in der Halle.','real',['Wenn es regnet, trainieren wir in der Halle.','Wir trainieren in der Halle, wenn es regnet.']],
+ ['Du hast Fragen.','Ruf mich an!','real',['Wenn du Fragen hast, ruf mich an!','Ruf mich an, wenn du Fragen hast!']],
+ ['Ich habe kein Geld.','Ich kann den Kurs nicht bezahlen.','real',['Wenn ich kein Geld habe, kann ich den Kurs nicht bezahlen.','Ich kann den Kurs nicht bezahlen, wenn ich kein Geld habe.']],
+ ['Der Kurs ist voll.','Wir melden uns für den nächsten an.','real',['Wenn der Kurs voll ist, melden wir uns für den nächsten an.','Wir melden uns für den nächsten an, wenn der Kurs voll ist.']],
+ ['Meine Mannschaft gewinnt.','Ich bin glücklich.','real',['Wenn meine Mannschaft gewinnt, bin ich glücklich.','Ich bin glücklich, wenn meine Mannschaft gewinnt.']],
+ ['Ich habe keine Zeit.','Ich mache keinen Sport.','irreal',['Wenn ich Zeit hätte, würde ich Sport machen.','Ich würde Sport machen, wenn ich Zeit hätte.','Wenn ich Zeit hätte, machte ich Sport.']],
+ ['Ich bin nicht fit.','Ich laufe keinen Marathon.','irreal',['Wenn ich fit wäre, würde ich einen Marathon laufen.','Ich würde einen Marathon laufen, wenn ich fit wäre.']],
+ ['Er spricht kein Deutsch.','Er bekommt die Stelle nicht.','irreal',['Wenn er Deutsch sprechen würde, würde er die Stelle bekommen.','Wenn er Deutsch spräche, würde er die Stelle bekommen.','Wenn er Deutsch könnte, würde er die Stelle bekommen.','Wenn er Deutsch sprechen könnte, würde er die Stelle bekommen.','Wenn er Deutsch sprechen würde, bekäme er die Stelle.','Er würde die Stelle bekommen, wenn er Deutsch sprechen würde.']],
+ ['Wir haben kein Auto.','Wir können nicht zum Spiel fahren.','irreal',['Wenn wir ein Auto hätten, könnten wir zum Spiel fahren.','Wir könnten zum Spiel fahren, wenn wir ein Auto hätten.']],
+ ['Ich muss arbeiten.','Ich komme nicht zum Training.','irreal',['Wenn ich nicht arbeiten müsste, würde ich zum Training kommen.','Wenn ich nicht arbeiten müsste, käme ich zum Training.','Ich würde zum Training kommen, wenn ich nicht arbeiten müsste.','Wenn ich nicht arbeiten müsste, könnte ich zum Training kommen.']]
+];
+const FREE=[
+ ['Was machst du, wenn du nach der Schule Zeit hast?','Wenn ich nach der Schule Zeit habe, spiele ich mit meinen Freunden Fußball.'],
+ ['Was passiert, wenn du verschläfst?','Wenn ich verschlafe, komme ich zu spät zur Schule.'],
+ ['Gib einem Freund einen Tipp für die Kurssuche (wenn + Imperativ).','Wenn du schnell Fortschritte machen willst, buch einen Intensivkurs.'],
+ ['Was machst du, wenn es sehr heiß ist?','Wenn es sehr heiß ist, gehe ich schwimmen.'],
+ ['Was machst du mit dem Geld, wenn du einen Ferienjob findest?','Wenn ich einen Ferienjob finde, spare ich das Geld für eine Reise nach Deutschland.'],
+ ['Hauptsatz zuerst: Ich bin nervös, wenn …','Ich bin nervös, wenn ich eine Prüfung habe.'],
+ ['Was machst du, wenn der Sprachkurs zu teuer ist?','Wenn der Kurs zu teuer ist, suche ich einen Online-Kurs oder ein Tandem.'],
+ ['Irreal: Was würdest du machen, wenn du ein Jahr in Deutschland wohnen könntest?','Wenn ich ein Jahr in Deutschland wohnen könnte, würde ich in einem Sportverein spielen.'],
+ ['Irreal: Wie wäre dein Leben, wenn du Profisportler wärst?','Wenn ich Profisportler wäre, müsste ich jeden Tag trainieren.'],
+ ['Irreal: Was würdest du ändern, wenn du der Chef deiner Schule wärst?','Wenn ich der Chef meiner Schule wäre, hätten alle Schüler freitags Sport.'],
+ ['Irreal: Was würdest du machen, wenn du mehr Freizeit hättest?','Wenn ich mehr Freizeit hätte, würde ich einen Abendkurs besuchen.'],
+ ['Mit „immer wenn“ (Vergangenheit, wiederholt): Was hast du als Kind gemacht?','Immer wenn ich Ferien hatte, habe ich meine Großeltern besucht.']
+];
+const sBag={trans:bag(TRANS),free:bag(FREE)};
+let sMode=store.get('p2smode','trans');let sNext=null;
+modeChips($('#s-modes'),[['trans','Umformen (Auto-Check)'],['free','Frei schreiben']],sMode,m=>{sMode=m;store.set('p2smode',m);renderS();});
+function renderS(){const card=$('#s-card');card.innerHTML='';sNext=null;
+  if(sMode==='trans'){const [a,b,kind,answers]=sBag.trans();
+    const inp=el('input',{type:'text',id:'s-trans-in',autocomplete:'off',spellcheck:'false',placeholder:'Wenn …'});let done=false;
+    const verify=()=>{if(done)return;const r=check(inp.value,answers);if(r==='empty')return;done=true;const ok=r==='ok';score('schreiben',ok);
+      let hint='';const v=norm(inp.value);if(!ok&&kind==='irreal'&&!/(wäre|hätte|würde|könnte|müsste|käme|spräche|bekäme|machte)/.test(v))hint='Irreal braucht Konjunktiv II (wäre, hätte, würde …).';
+      card.append(el('div',{class:'fb '+(ok?'ok':r==='comma'?'warn':'no')},el('b',{},ok?'Richtig.':r==='comma'?'Fast. Komma prüfen.':'Nicht ganz.'),hint?el('span',{class:'sol'},hint):null,ok?null:el('span',{class:'sol'},answers[0])));
+      const b=el('button',{class:'btn',onclick:renderS},'Weiter →');card.append(el('div',{class:'row'},b));sNext=renderS;b.focus({preventScroll:true});};
+    sNext=verify;
+    card.append(el('p',{class:'eyebrow'},kind==='real'?'Real · Präsens':'Irreal · Konjunktiv II (das Gegenteil ist wahr)'),
+      el('div',{class:'pair'},el('span',{},a),el('span',{},'→ '+b)),
+      el('p',{class:'why'},kind==='real'?'Bilde einen wenn-Satz.':'Bilde einen irrealen wenn-Satz. Achtung: positiv ↔ negativ drehen (kein Geld → Geld hätte).'),
+      inp,el('div',{class:'row'},el('button',{class:'btn',onclick:verify},'Prüfen')));
+    setTimeout(()=>inp.focus({preventScroll:true}),0);
+  } else {const [q,model]=sBag.free();
+    const ta=el('textarea',{id:'s-free-in',spellcheck:'false',placeholder:'Schreib deinen Satz …'});let shown=false;
+    const lint=el('ul',{class:'check'});
+    const reveal=()=>{if(shown)return;shown=true;const t=ta.value.trim();lint.innerHTML='';
+      const items=[[/\bwenn\b/i.test(t),'enthält „wenn“'],[/,/.test(t),'hat ein Komma zwischen den Sätzen'],[/^wenn\b/i.test(t)?/,\s*\S+/.test(t):true,'nach dem Komma: Verb zuerst (Verb, Verb)']];
+      if(t)items.forEach(([ok,l])=>lint.append(el('li',{},(ok?'✓ ':'○ ')+l)));
+      card.append(el('div',{class:'fb ok'},el('b',{},'Muster:'),el('span',{class:'sol'},model)),lint,
+        el('div',{class:'row'},el('span',{class:'why'},'Wie war dein Satz?'),el('button',{class:'btn',onclick:()=>{score('schreiben',true);renderS();}},'Richtig'),el('button',{class:'btn ghost',onclick:()=>{score('schreiben',false);renderS();}},'Fehler')));};
+    card.append(el('p',{class:'eyebrow'},q.startsWith('Irreal')?'Irreal · Konjunktiv II':'Frei schreiben'),el('p',{class:'q'},q),ta,
+      el('p',{class:'why'},'Check: Verb am Ende im wenn-Satz · Komma · Verb, Verb.'),
+      el('div',{class:'row'},el('button',{class:'btn',onclick:reveal},'Muster zeigen')));
+  }
+}
+
+/* =========================================================
+   LESEN
+   ========================================================= */
+const ADS=[
+ ['a','LinguaPlus Köln','Intensivkurs Deutsch B1, Mo–Fr 9–13 Uhr, 4 Wochen. Maximal 8 Teilnehmer. Vorbereitung auf das Goethe-Zertifikat inklusive. 690 €.'],
+ ['b','Volkshochschule Mannheim','Abendkurs Deutsch A2, Di + Do 18.30–20.00 Uhr, 12 Wochen, 149 €. Ideal für Berufstätige.'],
+ ['c','Sprachfux online','Lernen, wann und wo Sie wollen! Videolektionen + jede Woche ein Live-Gespräch mit Muttersprachlern. Alle Niveaus. 29 € im Monat, monatlich kündbar.'],
+ ['d','Sommerschule am Bodensee','Deutsch + Sport für Jugendliche (14–17 Jahre). Vormittags Unterricht, nachmittags Segeln, Klettern und Fußball. Wohnen in Gastfamilien. Juli und August.'],
+ ['e','Business-Deutsch Frankfurt','Deutsch für den Beruf: Bewerbungen, Telefonate, Präsentationen. Samstagskurs 9–15 Uhr, Niveau B1–B2. Oft zahlt der Arbeitgeber – wir beraten Sie.'],
+ ['f','Familienzentrum Leipzig','Deutschkurse A1–A2 am Vormittag. Während des Kurses spielen Ihre Kinder (1–6 Jahre) im Nebenraum. Kostenlos für Eltern aus Leipzig.'],
+ ['g','Tandem-Café Berlin','Kein Kurs, kein Lehrer: Jeden Mittwoch treffen sich Deutsche und Deutschlernende zum Gespräch. Eintritt frei.'],
+ ['h','Privatunterricht Hamburg','Erfahrene Lehrerin gibt Einzelunterricht, auch bei Ihnen zu Hause. Zeiten nach Absprache, auch am Wochenende. 35 € pro Stunde.']
+];
+const SITS=[
+ ['Carlos (16) aus Mexiko möchte im Sommer Deutsch lernen und dabei viel Sport machen.','d','Jugendliche 14–17 + Sport am Nachmittag + Sommer.'],
+ ['Frau Novak arbeitet in Frankfurt und möchte im Meeting auf Deutsch präsentieren. Unter der Woche hat sie keine Zeit.','e','Beruf + Präsentationen + Samstag + Frankfurt. Falle: h (Wochenende, aber Hamburg).'],
+ ['Ahmed hat zwei kleine Kinder und sucht einen günstigen Anfängerkurs in Leipzig.','f','A1–A2 + Kinderbetreuung + kostenlos + Leipzig.'],
+ ['Julia muss in vier Wochen die B1-Prüfung machen und hat jeden Vormittag Zeit.','a','B1 + 4 Wochen + vormittags + Prüfungsvorbereitung.'],
+ ['Kenji ist beruflich viel unterwegs. Er will flexibel lernen, aber auch mit echten Menschen sprechen.','c','„wann und wo Sie wollen“ + Live-Gespräch.'],
+ ['Sofia wohnt in München und sucht einen Abendkurs für das Niveau C1.','0','Falle: b ist ein Abendkurs, aber A2 und in Mannheim. Nichts passt → 0.'],
+ ['Tom möchte in Berlin einfach Deutsch sprechen und Leute kennenlernen, ohne Geld auszugeben.','g','Berlin + Gespräch + Eintritt frei.']
+];
+const RECS=[
+ {who:'Lena (17) will nach dem Abitur in Österreich studieren. Sie braucht ein B2-Zertifikat, hat nur im August drei Wochen Zeit, möchte höchstens 900 € ausgeben und lieber in einer kleinen Gruppe lernen.',
+  opts:[['Wien Sprachinstitut: B2-Intensivkurs, 3 Wochen im August, max. 10 Teilnehmer, Prüfung am Ende inklusive. 820 €.',true,'Alles passt: B2, August, 3 Wochen, kleine Gruppe, Prüfung, unter 900 €.'],
+        ['Salzburg Summer: B2-Kurs, 4 Wochen Juli–August, Gruppen bis 18 Personen. 750 €.',false,'4 Wochen und große Gruppen.'],
+        ['Graz Uni-Kurs: B2–C1, 3 Wochen im August, max. 12 Teilnehmer, mit Wohnheim. 1.250 €.',false,'Zu teuer (über 900 €).'],
+        ['Innsbruck online: B2 Einzelunterricht, Zeiten frei wählbar, ohne Prüfung. 400 €.',false,'Keine Gruppe und kein Zertifikat.']]},
+ {who:'Herr Okafor arbeitet in Stuttgart als Krankenpfleger im Schichtdienst: eine Woche früh, eine Woche spät. Er braucht Deutsch für die Arbeit im Krankenhaus (B1) und hat wenig Geld.',
+  opts:[['VHS Stuttgart: Abendkurs B1, Mo + Mi 18–20 Uhr, 16 Wochen. 210 €.',false,'Feste Abendtermine – in der Spätschicht kann er nicht.'],
+        ['PflegeDeutsch online: B1 für Pflegekräfte, Live-Stunden morgens und abends wählbar, Aufnahmen zum Nachholen. 39 € im Monat.',true,'Pflege-Wortschatz + flexible Zeiten + günstig.'],
+        ['Business-Deutsch kompakt: Wochenend-Intensivkurs für Büro und Marketing, B1–B2. 450 €.',false,'Falsches Thema und teuer.'],
+        ['Integrationskurs Stuttgart-Mitte: Mo–Fr 8.30–12.45 Uhr, A2–B1.',false,'Feste Vormittagstermine – in der Frühschicht kann er nicht.']]}
+];
+let lMode=store.get('p2lmode','match');
+modeChips($('#l-modes'),[['match','Anzeigen zuordnen'],['rec','Den besten Kurs empfehlen']],lMode,m=>{lMode=m;store.set('p2lmode',m);renderL();});
+function renderL(){const body=$('#l-body');body.innerHTML='';
+  if(lMode==='match'){
+    const adsBox=el('div',{class:'ads'});ADS.forEach(([l,t,d])=>adsBox.append(el('div',{class:'ad'},el('span',{class:'l'},l),el('h4',{},t),el('p',{},d))));
+    const sh=el('div',{class:'sheet'},el('p',{class:'why'},'Lies die Situationen 1–7 und die Anzeigen a–h. Welche Anzeige passt? Jede Anzeige nur einmal. Wenn keine passt: 0.'),adsBox);
+    const ans=el('div',{class:'sheet'},el('h3',{},'Antwortbogen'));
+    const picks={};let graded=false;
+    SITS.forEach(([t,sol,why],i)=>{const bb=el('div',{class:'bubbles'});
+      ['a','b','c','d','e','f','g','h','0'].forEach(o=>bb.append(el('button',{class:'bub','aria-pressed':'false','aria-label':`Situation ${i+1}: ${o}`,'data-o':o,onclick:e=>{if(graded)return;bb.querySelectorAll('.bub').forEach(x=>x.setAttribute('aria-pressed','false'));e.currentTarget.setAttribute('aria-pressed','true');picks[i]=o;}},o)));
+      ans.append(el('div',{class:'sit','data-i':i},el('p',{},el('b',{},(i+1)+'  '),t),bb,el('p',{class:'why','data-why':i})));});
+    const grade=el('button',{class:'btn',onclick:()=>{if(graded)return;graded=true;let c=0;SITS.forEach(([t,sol,why],i)=>{const row=ans.querySelector(`[data-i="${i}"]`);const p=picks[i];const ok=p===sol;if(ok)c++;score('lesen',ok);
+      row.querySelectorAll('.bub').forEach(b=>{b.setAttribute('aria-pressed','false');if(b.dataset.o===sol)b.classList.add(ok?'right':'missed');if(b.dataset.o===p&&!ok)b.classList.add('wrong');});
+      const w=row.querySelector('[data-why]');w.className='why '+(ok?'ok':'no');w.textContent=(ok?'Richtig. ':`Lösung: ${sol}. `)+why;});
+      res.textContent=`${c} von ${SITS.length} richtig.`;}},'Auswerten');
+    const res=el('span',{class:'meter'});
+    ans.append(el('div',{class:'row'},grade,el('button',{class:'btn ghost',onclick:renderL},'Neu starten'),res));
+    body.append(sh,ans);
+  } else {
+    RECS.forEach((r,ri)=>{const box=el('div',{class:'sheet'},el('p',{class:'eyebrow'},'Empfehlung '+(ri+1)),el('p',{class:'q'},r.who),el('p',{class:'why'},'Welchen Kurs empfiehlst du? Warum passen die anderen nicht?'));
+      const list=el('div',{class:'rec-opt'});let done=false;
+      shuffle(r.opts).forEach(([t,ok,why],oi)=>{const id=`rec${ri}-${oi}`;const lab=el('label',{for:id},el('input',{type:'radio',name:'rec'+ri,id,onchange:()=>{if(done)return;done=true;score('lesen',ok);list.querySelectorAll('label').forEach(L=>{L.classList.add(L.dataset.ok==='1'?'right':'wrong');L.querySelector('.why').hidden=false;});}}),el('span',{},t,el('span',{class:'why',hidden:''},' → '+why)));lab.dataset.ok=ok?'1':'0';list.append(lab);});
+      box.append(list);body.append(box);});
+    body.append(el('div',{class:'sheet'},el('h3',{},'So schreibst du die Empfehlung'),el('p',{},'„Ich empfehle dir Kurs A, weil er im August stattfindet. Kurs B passt nicht, weil die Gruppen zu groß sind. Wenn du eine Prüfung brauchst, ist Kurs D nicht gut, denn er hat kein Zertifikat.“'),el('p',{class:'why'},'weil → Verb am Ende · denn → normale Wortstellung · wenn → Verb am Ende.')));
+  }
+}
+
+/* =========================================================
+   HÖREN
+   ========================================================= */
+const TRACKS={
+ sport:{title:'Leistungssport für Jugendliche – ja oder nein?',
+  speakers:{M:{name:'Moderatorin',pitch:1.05,rate:1,v:0},L:{name:'Markus Lenz, Fußballtrainer',pitch:.75,rate:.97,v:1},H:{name:'Petra Haas, Sportlehrerin',pitch:1.3,rate:1.02,v:2}},
+  lines:[
+   ['M','Herzlich willkommen zu „Thema der Woche“. Heute sprechen wir über Leistungssport bei Jugendlichen. Viele Teenager trainieren fünf- oder sechsmal pro Woche. Ist das gesund? Bei mir sind Markus Lenz, Trainer einer Jugend-Fußballmannschaft, und Petra Haas, Sportlehrerin an einem Gymnasium. Herr Lenz, wie sehen Sie das?'],
+   ['L','Ich finde Leistungssport für Jugendliche super. Wenn junge Leute regelmäßig trainieren, lernen sie Disziplin und Teamgeist. Das hilft ihnen später auch im Beruf. Meine Spieler trainieren viermal pro Woche, und die meisten sind auch in der Schule gut.'],
+   ['H','Da muss ich widersprechen. Natürlich ist Sport wichtig, aber viele Jugendliche haben zu wenig Freizeit. Als ich selbst fünfzehn war, habe ich Leistungsschwimmen gemacht. Ich war jeden Morgen um sechs Uhr im Schwimmbad und in der Schule war ich oft müde.'],
+   ['M','Frau Haas, heißt das, Sie würden Jugendlichen davon abraten?'],
+   ['H','Nein, nicht unbedingt. Aber Eltern und Trainer müssen aufpassen, damit die Kinder nicht zu viel Druck haben. Die Schule muss immer an erster Stelle stehen.'],
+   ['L','Das sehe ich anders. Für manche Jugendliche ist der Sport die große Chance. Wenn man ein Talent nicht früh fördert, ist es mit achtzehn zu spät für eine Profikarriere.'],
+   ['M','Viele Hörerinnen und Hörer haben uns geschrieben, dass Leistungssport auch sehr teuer ist. Fahrten, Ausrüstung, Trainingslager …'],
+   ['L','Das stimmt leider. Viele Vereine suchen deshalb Sponsoren, um die Kosten für die Familien niedrig zu halten.'],
+   ['H','Und genau deshalb finde ich Schulsport so wichtig. Er ist kostenlos und alle können mitmachen, nicht nur die Talentierten.'],
+   ['M','Zum Schluss: Was ist Ihr Tipp für Jugendliche?'],
+   ['H','Macht Sport, weil er euch Spaß macht. Nicht nur, um Medaillen zu gewinnen.'],
+   ['L','Und wenn ihr ein Ziel habt, dann kämpft dafür!'],
+   ['M','Vielen Dank an Sie beide.']],
+  items:[
+   ['Viele Jugendliche trainieren mehrmals pro Woche.','M',true],
+   ['Durch Leistungssport lernt man Dinge, die man später bei der Arbeit braucht.','L'],
+   ['Wegen des Trainings war sie als Jugendliche oft müde.','H'],
+   ['Die Schule ist wichtiger als der Sport.','H'],
+   ['Talente muss man früh fördern.','L'],
+   ['Viele Zuhörer finden Leistungssport teuer.','M'],
+   ['Vereine bekommen Geld von Firmen.','L'],
+   ['Beim Schulsport kann jeder mitmachen.','H'],
+   ['Wer ein Ziel hat, soll sich dafür anstrengen.','L']]},
+ arbeit:{title:'Ferienjobs für Schüler – lohnt sich das?',
+  speakers:{M:{name:'Moderator',pitch:.9,rate:1,v:0},S:{name:'Lisa Brandt, Schülerin (17)',pitch:1.35,rate:1.05,v:1},W:{name:'Klaus Wagner, Personalchef',pitch:.7,rate:.95,v:2}},
+  lines:[
+   ['M','Guten Abend und willkommen bei „Jung und aktiv“. Unser Thema heute: Ferienjobs. Jeder dritte Schüler in Deutschland arbeitet in den Ferien. Lohnt sich das? Bei mir im Studio sind Lisa Brandt, siebzehn Jahre alt, und Klaus Wagner, Personalchef bei einer Supermarktkette. Lisa, du arbeitest gerade in einem Café, richtig?'],
+   ['S','Ja, seit Juli. Ich arbeite dort, um Geld für meinen Führerschein zu verdienen. Am Anfang war es ziemlich anstrengend, aber jetzt macht es mir richtig Spaß. Ich lerne viele Leute kennen.'],
+   ['W','Das höre ich gern. Wir stellen jeden Sommer etwa zweihundert Schüler ein. Für uns ist das eine gute Möglichkeit, junge Leute kennenzulernen. Manche fangen später bei uns eine Ausbildung an.'],
+   ['M','Aber Kritiker sagen, Schüler sollten sich in den Ferien lieber erholen.'],
+   ['S','Ich arbeite ja nicht die ganzen Ferien, nur vier Wochen. Danach fahre ich mit meinen Freundinnen ans Meer.'],
+   ['W','Genau. Und das Gesetz schützt die Schüler. Unter achtzehn darf man in den Ferien höchstens vier Wochen im Jahr arbeiten, und natürlich nicht nachts.'],
+   ['M','Lisa, was war denn schwierig für dich?'],
+   ['S','Als ich am ersten Tag ein ganzes Tablett mit Kaffee fallen gelassen habe! Das war mir so peinlich. Aber meine Chefin hat nur gelacht.'],
+   ['W','Fehler gehören dazu. Wichtig ist, dass man pünktlich und freundlich ist. Wenn ein Schüler zuverlässig ist, schreibe ich ihm gern ein Zeugnis, damit er es später für Bewerbungen benutzen kann.'],
+   ['M','Ein guter Tipp! Herr Wagner, was verdienen Schüler bei Ihnen?'],
+   ['W','Das hängt vom Alter ab. Aber ehrlich gesagt: Das Geld ist nicht das Wichtigste. Die Erfahrung ist viel mehr wert.'],
+   ['S','Na ja, für mich ist das Geld schon wichtig!'],
+   ['M','Vielen Dank euch beiden.']],
+  items:[
+   ['Viele Schüler in Deutschland arbeiten in den Ferien.','M',true],
+   ['Am Anfang war die Arbeit hart für sie.','S'],
+   ['Einige Ferienjobber bleiben später für eine Ausbildung.','W'],
+   ['Manche Leute meinen, Schüler brauchen in den Ferien Erholung.','M'],
+   ['Nach der Arbeit macht sie noch Urlaub.','S'],
+   ['Jugendliche dürfen nicht unbegrenzt arbeiten.','W'],
+   ['Am ersten Arbeitstag ist ihr ein Missgeschick passiert.','S'],
+   ['Ein Arbeitszeugnis hilft bei späteren Bewerbungen.','W'],
+   ['Sie arbeitet vor allem wegen des Geldes.','S']]}
+};
+let hMode=store.get('p2hmode','sport');let rate=store.get('p2rate',.95);
+const hasTTS='speechSynthesis' in window;
+let voices=[];function loadVoices(){if(!hasTTS)return;try{voices=speechSynthesis.getVoices().filter(v=>(v.lang||'').toLowerCase().startsWith('de'));}catch(e){voices=[];}}
+if(hasTTS){loadVoices();try{speechSynthesis.addEventListener('voiceschanged',loadVoices);}catch(e){}}
+let playing=null;
+function stopAudio(){if(hasTTS){try{speechSynthesis.cancel();}catch(e){}}if(playing){playing.stop=true;playing.onStop&&playing.onStop();}playing=null;}
+modeChips($('#h-modes'),[['sport','Sport'],['arbeit','Arbeit']],hMode,m=>{hMode=m;store.set('p2hmode',m);stopAudio();renderH();});
+function renderH(){const T=TRACKS[hMode];const body=$('#h-body');body.innerHTML='';
+  const keys=Object.keys(T.speakers);
+  const sheet=el('div',{class:'sheet'},el('h3',{},T.title),el('div',{class:'speak'},keys.map(k=>el('span',{},el('b',{},k),' = '+T.speakers[k].name+'  '))));
+  const now=el('span',{class:'now'},hasTTS?'Bereit.':'Dein Browser kann keine Sprache vorlesen. Nutze das Transkript.');
+  let plays=0;
+  const playBtn=el('button',{class:'btn',onclick:()=>startPlay()},'▶ Abspielen');
+  const stopBtn=el('button',{class:'btn ghost',onclick:()=>{stopAudio();now.textContent='Gestoppt.';}},'■ Stopp');
+  const rateIn=el('input',{type:'range',min:'0.7',max:'1.15',step:'0.05',value:String(rate),id:'h-rate',oninput:e=>{rate=+e.target.value;store.set('p2rate',rate);rlab.textContent=rate.toFixed(2)+'×';}});
+  const rlab=el('span',{class:'meter'},rate.toFixed(2)+'×');
+  if(!hasTTS){playBtn.disabled=true;stopBtn.disabled=true;}
+  sheet.append(el('div',{class:'player'},playBtn,stopBtn,el('label',{class:'sl',for:'h-rate'},'Tempo',rateIn,rlab),now));
+  if(hasTTS&&!voices.length)setTimeout(()=>{loadVoices();if(!voices.length)now.textContent='Keine deutsche Stimme gefunden – es wird die Standardstimme benutzt.';},800);
+  const script=el('div',{class:'script',hidden:''});
+  T.lines.forEach(([sp,tx],i)=>script.append(el('p',{'data-l':i},el('b',{},sp+': '),tx)));
+  function startPlay(){stopAudio();loadVoices();plays++;const job={stop:false};playing=job;let i=0;
+    const sentences=T.lines.map(([sp,tx])=>[sp,tx.match(/[^.!?…]+[.!?…]*["“”]?\s*/g)||[tx]]);
+    let si=0;
+    const step=()=>{if(job.stop)return;if(i>=sentences.length){now.textContent=`Ende (${plays}. Mal gehört).`;playing=null;script.querySelectorAll('p').forEach(p=>p.classList.remove('on'));return;}
+      const [sp,parts]=sentences[i];const cfg=T.speakers[sp];now.textContent=`${plays}. Hören · spricht: ${cfg.name}`;
+      script.querySelectorAll('p').forEach(p=>p.classList.toggle('on',+p.dataset.l===i));
+      const u=new SpeechSynthesisUtterance(parts[si].trim());u.lang='de-DE';
+      if(voices.length)u.voice=voices[cfg.v%voices.length];
+      u.pitch=cfg.pitch;u.rate=rate*cfg.rate;
+      const adv=()=>{if(job.stop)return;si++;if(si>=parts.length){si=0;i++;setTimeout(step,450);}else step();};
+      u.onend=adv;u.onerror=ev=>{if(ev.error==='canceled'||ev.error==='interrupted')return;adv();};
+      try{speechSynthesis.speak(u);}catch(e){now.textContent='Vorlesen nicht möglich. Nutze das Transkript.';}};
+    step();}
+  const ans=el('div',{class:'sheet'},el('h3',{},'Wer sagt das?'),el('p',{class:'why'},'Ordne jede Aussage einer Person zu. 0 ist das Beispiel.'));
+  const picks={};let graded=false;
+  T.items.forEach(([t,sol,ex],i)=>{const bb=el('div',{class:'bubbles'});
+    keys.forEach(k=>{const b=el('button',{class:'bub wide','aria-pressed':ex&&k===sol?'true':'false','data-o':k,onclick:e=>{if(graded||ex)return;bb.querySelectorAll('.bub').forEach(x=>x.setAttribute('aria-pressed','false'));e.currentTarget.setAttribute('aria-pressed','true');picks[i]=k;}},k+' · '+T.speakers[k].name.split(',')[0]);bb.append(b);});
+    ans.append(el('div',{class:'sit','data-i':i},el('p',{},el('b',{},(ex?'0':i)+'  '),t,ex?el('span',{class:'tag'},' Beispiel'):null),bb,el('p',{class:'why','data-why':i})));});
+  const res=el('span',{class:'meter'});
+  ans.append(el('div',{class:'row'},el('button',{class:'btn',onclick:()=>{if(graded)return;graded=true;let c=0,n=0;T.items.forEach(([t,sol,ex],i)=>{if(ex)return;n++;const row=ans.querySelector(`[data-i="${i}"]`);const p=picks[i];const ok=p===sol;if(ok)c++;score('hoeren',ok);
+      row.querySelectorAll('.bub').forEach(b=>{b.setAttribute('aria-pressed','false');if(b.dataset.o===sol)b.classList.add(ok?'right':'missed');if(b.dataset.o===p&&!ok)b.classList.add('wrong');});
+      const w=row.querySelector('[data-why]');w.className='why '+(ok?'ok':'no');w.textContent=ok?'Richtig.':`Lösung: ${T.speakers[sol].name}`;});
+    res.textContent=`${c} von ${n} richtig.`;script.hidden=false;tBtn.textContent='Transkript verbergen';}},'Auswerten'),
+    el('button',{class:'btn ghost',onclick:()=>{stopAudio();renderH();}},'Neu starten'),res));
+  const tBtn=el('button',{class:'btn ghost',onclick:()=>{script.hidden=!script.hidden;tBtn.textContent=script.hidden?'Transkript zeigen':'Transkript verbergen';}},'Transkript zeigen');
+  const tSheet=el('div',{class:'sheet'},el('div',{class:'row'},el('h3',{},'Transkript'),tBtn),script);
+  body.append(sheet,ans,tSheet);
+}
+
+/* =========================================================
+   WORTSCHATZ
+   ========================================================= */
+const VOC={
+ arbeit:[['el puesto, la vacante','die Stelle'],['la solicitud de empleo','die Bewerbung'],['postularse (a un puesto)','sich bewerben'],['el empleador','der Arbeitgeber'],['el empleado','der Arbeitnehmer'],['el sueldo','das Gehalt'],['ganar (dinero)','verdienen'],['la formación profesional','die Ausbildung'],['el trabajo de vacaciones','der Ferienjob'],['medio tiempo','die Teilzeit'],['tiempo completo','die Vollzeit'],['el fin de la jornada laboral','der Feierabend'],['las horas extra','die Überstunden'],['la entrevista de trabajo','das Vorstellungsgespräch'],['renunciar / despedir','kündigen'],['la experiencia','die Erfahrung'],['confiable','zuverlässig'],['la carta de referencia laboral','das Zeugnis'],['el trabajo por turnos','der Schichtdienst'],['el jefe de personal','der Personalchef'],['contratar','einstellen']],
+ sport:[['el club','der Verein'],['el equipo','die Mannschaft'],['entrenar','trainieren'],['el entrenador','der Trainer'],['el gol / la portería','das Tor'],['ganar (un partido)','gewinnen'],['perder','verlieren'],['la competencia','der Wettkampf'],['lastimarse','sich verletzen'],['la lesión','die Verletzung'],['mantenerse en forma','fit bleiben'],['la resistencia','die Ausdauer'],['el deporte de alto rendimiento','der Leistungssport'],['el gimnasio','das Fitnessstudio'],['el gimnasio techado / la cancha cubierta','die Halle'],['el equipo / la indumentaria','die Ausrüstung'],['el campamento de entrenamiento','das Trainingslager'],['promover (un talento)','fördern']],
+ kurs:[['el principiante','der Anfänger'],['el participante','der Teilnehmer'],['la cuota del curso','die Kursgebühr'],['inscribirse','sich anmelden'],['la inscripción','die Anmeldung'],['el curso intensivo','der Intensivkurs'],['el curso nocturno','der Abendkurs'],['el nivel','das Niveau'],['aprobar el examen','die Prüfung bestehen'],['el alojamiento','die Unterkunft'],['la familia anfitriona','die Gastfamilie'],['el cuidado de niños','die Kinderbetreuung'],['gratis','kostenlos'],['el descuento','die Ermäßigung'],['el examen de ubicación','der Einstufungstest'],['el anuncio','die Anzeige'],['el hablante nativo','der Muttersprachler'],['recomendar','empfehlen']]
+};
+let wMode=store.get('p2wmode','alle');let wNext=null;
+const wBags={};function wGet(){const pool=wMode==='alle'?[...VOC.arbeit,...VOC.sport,...VOC.kurs]:VOC[wMode];if(!wBags[wMode])wBags[wMode]=bag(pool);return wBags[wMode]();}
+modeChips($('#w-modes'),[['alle','Alle'],['arbeit','Arbeit'],['sport','Sport'],['kurs','Sprachkurs']],wMode,m=>{wMode=m;store.set('p2wmode',m);renderW();});
+function renderW(){const card=$('#w-card');card.innerHTML='';const [es,de]=wGet();
+  const inp=el('input',{type:'text',id:'w-in',autocomplete:'off',spellcheck:'false',placeholder:'Deutsch …'});let done=false;
+  const strip=s=>norm(s).replace(/^(der|die|das|sich) /,'');
+  const verify=()=>{if(done)return;const v=inp.value;if(!norm(v))return;done=true;let cls,msg;
+    if(norm(v)===norm(de)){cls='ok';msg='Richtig.';score('wort',true);}
+    else if(strip(v)===strip(de)){cls='warn';msg=/^sich /.test(norm(de))?'Fast. Reflexiv: ':'Fast. Artikel: ';score('wort',false);}
+    else{cls='no';msg='Lösung: ';score('wort',false);}
+    card.append(el('div',{class:'fb '+cls},el('b',{},msg),cls==='ok'?de:el('span',{},de)));
+    const b=el('button',{class:'btn',onclick:renderW},'Weiter →');card.append(el('div',{class:'row'},b));wNext=renderW;b.focus({preventScroll:true});};
+  wNext=verify;
+  card.append(el('p',{class:'eyebrow'},'Spanisch → Deutsch'),el('p',{class:'q'},es),inp,el('div',{class:'row'},el('button',{class:'btn',onclick:verify},'Prüfen'),el('button',{class:'btn ghost'},'Weiß nicht')));
+  card.querySelector('.btn.ghost').onclick=()=>{if(done)return;done=true;score('wort',false);card.append(el('div',{class:'fb no'},el('b',{},'Lösung: '),de));const b=el('button',{class:'btn',onclick:renderW},'Weiter →');card.append(el('div',{class:'row'},b));wNext=renderW;b.focus({preventScroll:true});};
+  setTimeout(()=>inp.focus({preventScroll:true}),0);
+}
+
+/* ---------- boot ---------- */
+renderK();renderS();renderL();renderH();renderW();
+const valid=TABS.map(t=>t[0]);
+show(valid.includes(startTab)?startTab:store.get('p2tab','regeln'));
+})();
+</script>
+
+</body>
+</html>
